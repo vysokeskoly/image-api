@@ -1,0 +1,3 @@
+api:
+    resource: "@ImageApi/Resources/config/routing.yml"
+    prefix:   /
