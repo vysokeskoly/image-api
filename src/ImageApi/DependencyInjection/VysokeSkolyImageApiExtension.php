@@ -24,6 +24,7 @@ class VysokeSkolyImageApiExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+        $loader->load('services-facades.yml');
         $loader->load('services-security.yml');
         $loader->load('parameters.yml');
     }
