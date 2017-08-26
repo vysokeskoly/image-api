@@ -24,7 +24,10 @@
             <directory>src</directory>
             <exclude>
                 <directory>src/*/Controller</directory>
+                <directory>src/*/DependencyInjection</directory>
                 <directory>src/*/Resources</directory>
+                <directory>src/*/*/Security</directory>
+                <directory suffix="ImageApi.php">src/*</directory>
             </exclude>
         </whitelist>
     </filter>

@@ -20,20 +20,9 @@ class Status
         $this->messages = $messages;
     }
 
-    public function setStatus(string $status)
-    {
-        $this->status = $status;
-    }
-
     public function isSuccess(): bool
     {
         return $this->isSuccess;
-    }
-
-    public function addError(string $error): void
-    {
-        $this->isSuccess = false;
-        $this->messages[] = $error;
     }
 
     public function toArray(): array
