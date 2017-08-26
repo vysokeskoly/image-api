@@ -9,16 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use VysokeSkoly\ImageApi\Facade\StorageFacade;
 
-class StorageController extends Controller
+class ImageController extends Controller
 {
     /**
-     * @Route("/save")
+     * @Route("/image")
      * @Method("POST")
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
-    public function saveAction(Request $request): JsonResponse
+    public function postImageAction(Request $request): JsonResponse
     {
         $storage = $this->get(StorageFacade::class);
         $storage->saveFiles($request->files);
@@ -29,15 +26,22 @@ class StorageController extends Controller
     }
 
     /**
-     * @Route("/get")
-     *
-     * @param Request $request
-     * @return JsonResponse
+     * @Route("/image")
+     * @Method("GET")
      */
-    public function getAction(Request $request): JsonResponse
+    public function getImageAction(Request $request): JsonResponse
     {
         return $this->json([
             'status' => 'OK',
         ]);
+    }
+
+    /**
+     * @Route("/image")
+     * @Method("DELETE")
+     */
+    public function deleteImageAction(Request $request): JsonResponse
+    {
+        throw new \Exception(sprintf('Method %s is not implemented yet.', __METHOD__));
     }
 }
