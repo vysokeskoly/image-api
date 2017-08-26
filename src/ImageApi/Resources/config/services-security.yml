@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    VysokeSkoly\ImageApi\Service\Security\ApiKeyUserProvider:
+        arguments:
+            $apiKey: "%api_key%"
+
+    VysokeSkoly\ImageApi\Service\Security\ApiKeyAuthenticator: ~
+
+    VysokeSkoly\ImageApi\Service\Security\ApiExceptionSubscriber:
+        arguments:
+            $isDebug: "%kernel.debug%"

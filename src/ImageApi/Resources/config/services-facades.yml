@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    VysokeSkoly\ImageApi\Facade\StorageFacade:
+        arguments:
+            $storagePath: '%storage_path%'
