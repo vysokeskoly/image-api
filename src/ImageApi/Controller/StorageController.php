@@ -21,11 +21,11 @@ class StorageController extends Controller
     public function saveAction(Request $request): JsonResponse
     {
         $storage = $this->get(StorageFacade::class);
-        $storage->saveImage($request->files);
+        $storage->saveFiles($request->files);
 
-        return $this->json([
-            'status' => $storage->getStatus(),
-        ]);
+        $status = $storage->getStatus();
+
+        return $this->json($status, $status->isSuccess() ? 200 : 500);
     }
 
     /**

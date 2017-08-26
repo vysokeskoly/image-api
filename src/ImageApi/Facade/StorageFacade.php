@@ -2,20 +2,53 @@
 
 namespace VysokeSkoly\ImageApi\Facade;
 
+use Assert\Assertion;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
+use VysokeSkoly\ImageApi\Entity\Status;
 
 class StorageFacade
 {
     /** @var string */
-    private $status = '';
+    private $storagePath;
 
-    public function saveImage(FileBag $files): void
+    /** @var Status */
+    private $status;
+
+    public function __construct(string $storagePath)
     {
-        throw new \Exception(sprintf('Method %s is not implemented yet.', __METHOD__));
+        $this->storagePath = $storagePath;
     }
 
-    public function getStatus(): string
+    public function saveFiles(FileBag $files): void
     {
-        return $this->status;
+        if (!$files->count()) {
+            $this->status = new Status('NO_FILES', false);
+
+            return;
+        }
+
+        $uploadedFiles = array_filter($files->all(), function ($file) {
+            return $file instanceof UploadedFile;
+        });
+
+        /** @var UploadedFile $uploadedFile */
+        foreach ($uploadedFiles as $uploadedFile) {
+            try {
+                $fileName = $uploadedFile->getClientOriginalName();
+                $file = $uploadedFile->move($this->storagePath, $fileName);
+
+                Assertion::file($file->getRealPath());
+                Assertion::same($fileName, $file->getFilename());
+                $this->status = new Status('OK', true, [$fileName]);
+            } catch (\Exception $e) {
+                $this->status = new Status('ERROR', false, [get_class($e), $e->getMessage()]);
+            }
+        }
+    }
+
+    public function getStatus(): Status
+    {
+        return $this->status ?? new Status('unknown', false);
     }
 }

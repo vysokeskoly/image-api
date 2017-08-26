@@ -13,7 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "VysokeSkoly\\Tests\\ImageApi\\": "tests/ImageApi"
+            "VysokeSkoly\\Tests\\ImageApi\\": "tests"
         },
         "files": [
             "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php"
