@@ -14,7 +14,7 @@ use VysokeSkoly\Tests\ImageApi\AbstractTestCase;
 
 class StorageFacadeTest extends AbstractTestCase
 {
-    const UPLOAD_PATH = '/tests/';
+    const UPLOAD_PATH = __DIR__ . '/../Fixtures/';
 
     /** @var StorageFacade */
     private $storage;
@@ -191,5 +191,14 @@ class StorageFacadeTest extends AbstractTestCase
 
         $this->assertSame($expectedStatus, $status->toArray());
         $this->assertSame(500, $status->getStatusCode());
+    }
+
+    public function testShouldListAllFromStorage()
+    {
+        $expectedFiles = ['file'];
+
+        $list = $this->storage->listAll();
+
+        $this->assertSame($expectedFiles, $list);
     }
 }

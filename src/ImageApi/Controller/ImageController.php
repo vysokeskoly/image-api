@@ -49,4 +49,13 @@ class ImageController extends Controller
 
         return $this->json($status->toArray(), $status->getStatusCode());
     }
+
+    /**
+     * @Route("/list/")
+     * @Method("GET")
+     */
+    public function getListAction()
+    {
+        return $this->json($this->get(StorageFacade::class)->listAll(), 200);
+    }
 }
