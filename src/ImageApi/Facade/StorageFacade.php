@@ -4,6 +4,8 @@ namespace VysokeSkoly\ImageApi\Facade;
 
 use Assert\Assertion;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -84,5 +86,17 @@ class StorageFacade
     public function getStatus(): Status
     {
         return $this->status ?? new Status('unknown', false, 500);
+    }
+
+    public function listAll(): array
+    {
+        return array_values(
+            array_map(
+                function (SplFileInfo $file) {
+                    return $file->getFilename();
+                },
+                iterator_to_array((new Finder())->files()->in($this->storagePath))
+            )
+        );
     }
 }

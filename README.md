@@ -14,8 +14,8 @@ Api for storing images
 | Save      | `/image/`             | POST      |
 | Get       | `/image/:fileName`    | GET       |
 | Delete    | `/image/:fileName`    | DELETE    |
+| List all  | `/list/`              | GET       |
 
 
 ## Todo
 - get (vysokeskoly? - cdn)
-- listAll (vysokeskoly? - cdn)
