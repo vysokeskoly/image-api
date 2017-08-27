@@ -7,15 +7,15 @@ VysokeSkoly/image-api
 Api for storing images
 
 ## Actions:
-| action    | path      | method    |
-| ---       | ---       | ---       |
-| Homepage  | `/`       | ANY       |
-| Auth      | `/auth`   | ANY       |
-| Save      | `/image`  | POST      |
-| Get       | `/image`  | GET       |
-| Delete    | `/image`  | DELETE    |
+| action    | path                  | method    |
+| ---       | ---                   | ---       |
+| Homepage  | `/`                   | ANY       |
+| Auth      | `/auth`               | ANY       |
+| Save      | `/image/`             | POST      |
+| Get       | `/image/:fileName`    | GET       |
+| Delete    | `/image/:fileName`    | DELETE    |
 
 
 ## Todo
 - get (vysokeskoly? - cdn)
-- delete (see `JobsAcademy\AdminBundle\Command\CleanSwiftCommand`)
+- listAll (vysokeskoly? - cdn)
