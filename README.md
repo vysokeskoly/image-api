@@ -18,3 +18,4 @@ Api for storing images
 
 ## Todo
 - get (vysokeskoly? - cdn)
+- listAll (vysokeskoly? - cdn)
