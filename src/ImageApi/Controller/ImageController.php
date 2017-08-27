@@ -12,7 +12,7 @@ use VysokeSkoly\ImageApi\Facade\StorageFacade;
 class ImageController extends Controller
 {
     /**
-     * @Route("/image")
+     * @Route("/image/")
      * @Method("POST")
      */
     public function postImageAction(Request $request): JsonResponse
@@ -22,14 +22,14 @@ class ImageController extends Controller
 
         $status = $storage->getStatus();
 
-        return $this->json($status, $status->isSuccess() ? 200 : 500);
+        return $this->json($status->toArray(), $status->getStatusCode());
     }
 
     /**
-     * @Route("/image")
+     * @Route("/image/{fileName}")
      * @Method("GET")
      */
-    public function getImageAction(Request $request): JsonResponse
+    public function getImageAction(Request $request, string $fileName): JsonResponse
     {
         return $this->json([
             'status' => 'OK',
@@ -37,11 +37,16 @@ class ImageController extends Controller
     }
 
     /**
-     * @Route("/image")
+     * @Route("/image/{fileName}")
      * @Method("DELETE")
      */
-    public function deleteImageAction(Request $request): JsonResponse
+    public function deleteImageAction(Request $request, string $fileName): JsonResponse
     {
-        throw new \Exception(sprintf('Method %s is not implemented yet.', __METHOD__));
+        $storage = $this->get(StorageFacade::class);
+        $storage->delete($fileName);
+        
+        $status = $storage->getStatus();
+
+        return $this->json($status->toArray(), $status->getStatusCode());
     }
 }
