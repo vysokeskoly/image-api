@@ -13,6 +13,9 @@ use VysokeSkoly\ImageApi\Entity\Status;
 
 class StorageFacade
 {
+    private const STATUS_OK = 'OK';
+    private const STATUS_ERROR = 'ERROR';
+
     /** @var string */
     private $storagePath;
 
@@ -57,12 +60,12 @@ class StorageFacade
 
     private function createSuccessStatus(string $fileName): void
     {
-        $this->status = new Status('OK', true, 200, [$fileName]);
+        $this->status = new Status(self::STATUS_OK, true, 200, [$fileName]);
     }
 
     private function createErrorStatus(\Throwable $e, int $statusCode = 500): void
     {
-        $this->status = new Status('ERROR', false, $statusCode, [get_class($e), $e->getMessage()]);
+        $this->status = new Status(self::STATUS_ERROR, false, $statusCode, [get_class($e), $e->getMessage()]);
     }
 
     public function delete(string $fileName): void
@@ -70,7 +73,7 @@ class StorageFacade
         try {
             $filePath = $this->storagePath . $fileName;
             if (!$this->fileSystem->exists($filePath)) {
-                throw new NotFoundHttpException(sprintf("File '%s' was not found.", $fileName));
+                throw $this->createNotFoundException($fileName);
             }
 
             $this->fileSystem->remove($filePath);
@@ -81,6 +84,11 @@ class StorageFacade
         } catch (\Exception $e) {
             $this->createErrorStatus($e);
         }
+    }
+
+    private function createNotFoundException(string $fileName): \Throwable
+    {
+        return new NotFoundHttpException(sprintf("File '%s' was not found.", $fileName));
     }
 
     public function getStatus(): Status
@@ -98,5 +106,19 @@ class StorageFacade
                 iterator_to_array((new Finder())->files()->in($this->storagePath))
             )
         );
+    }
+
+    public function getImage(string $fileName): ?string
+    {
+        $filePath = $this->storagePath . $fileName;
+        $exists = $this->fileSystem->exists($filePath);
+
+        $exists
+            ? $this->createSuccessStatus($fileName)
+            : $this->createErrorStatus($this->createNotFoundException($fileName), 404);
+
+        return $exists
+            ? file_get_contents($filePath)
+            : null;
     }
 }

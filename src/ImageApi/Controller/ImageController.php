@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use VysokeSkoly\ImageApi\Facade\StorageFacade;
 
 class ImageController extends Controller
@@ -29,11 +30,16 @@ class ImageController extends Controller
      * @Route("/image/{fileName}")
      * @Method("GET")
      */
-    public function getImageAction(Request $request, string $fileName): JsonResponse
+    public function getImageAction(Request $request, string $fileName): Response
     {
-        return $this->json([
-            'status' => 'OK',
-        ]);
+        $storage = $this->get(StorageFacade::class);
+        $image = $storage->getImage($fileName);
+
+        $status = $storage->getStatus();
+
+        return $status->isSuccess()
+            ? new Response($image)
+            : $this->json($status->toArray(), $status->getStatusCode());
     }
 
     /**
@@ -44,7 +50,7 @@ class ImageController extends Controller
     {
         $storage = $this->get(StorageFacade::class);
         $storage->delete($fileName);
-        
+
         $status = $storage->getStatus();
 
         return $this->json($status->toArray(), $status->getStatusCode());

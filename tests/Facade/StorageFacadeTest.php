@@ -3,6 +3,7 @@
 namespace VysokeSkoly\Tests\ImageApi\Facade;
 
 use Mockery as m;
+use phpmock\mockery\PHPMockery;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
@@ -200,5 +201,60 @@ class StorageFacadeTest extends AbstractTestCase
         $list = $this->storage->listAll();
 
         $this->assertSame($expectedFiles, $list);
+    }
+
+    public function testShouldGetImage()
+    {
+        $fileName = 'file';
+        $content = 'content';
+        $filePath = self::UPLOAD_PATH . $fileName;
+        $expectedStatus = [
+            'status' => 'OK',
+            'isSuccess' => true,
+            'messages' => [$fileName],
+        ];
+
+        $this->fileSystem->shouldReceive('exists')
+            ->with($filePath)
+            ->once()
+            ->andReturn(true);
+
+        PHPMockery::mock('VysokeSkoly\ImageApi\Facade', 'file_get_contents')
+            ->with($filePath)
+            ->once()
+            ->andReturn($content);
+
+        $result = $this->storage->getImage($fileName);
+        $status = $this->storage->getStatus();
+
+        $this->assertSame($content, $result);
+        $this->assertSame($expectedStatus, $status->toArray());
+    }
+
+    public function testShouldNotFindImage()
+    {
+        $fileName = 'file';
+        $content = 'content';
+        $filePath = self::UPLOAD_PATH . $fileName;
+        $errorMessage = sprintf('File \'%s\' was not found.', $fileName);
+        $expectedStatus = [
+            'status' => 'ERROR',
+            'isSuccess' => false,
+            'messages' => [
+                NotFoundHttpException::class,
+                $errorMessage,
+            ],
+        ];
+
+        $this->fileSystem->shouldReceive('exists')
+            ->with($filePath)
+            ->once()
+            ->andReturn(false);
+
+        $result = $this->storage->getImage($fileName);
+        $status = $this->storage->getStatus();
+
+        $this->assertNull($result);
+        $this->assertSame($expectedStatus, $status->toArray());
     }
 }
