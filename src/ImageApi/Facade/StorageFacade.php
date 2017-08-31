@@ -103,7 +103,7 @@ class StorageFacade
                 function (SplFileInfo $file) {
                     return $file->getFilename();
                 },
-                iterator_to_array((new Finder())->files()->in($this->storagePath))
+                iterator_to_array((new Finder())->files()->in($this->storagePath)->depth('== 0'))
             )
         );
     }
