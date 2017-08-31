@@ -17,3 +17,18 @@ Api for storing images
 | List all  | `/list/`              | GET       |
 
 All routes has optional parameter `?namespace=...` which will be used as _sub directory_ in your storage path.
+
+
+## Build deb package
+
+### Before 1st run only
+- make sure you are building deb on `Ubuntu`
+
+```bash
+./install-deb-dependencies.sh
+```
+
+### Build deb
+```bash
+./build-deb.sh
+```

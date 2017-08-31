@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "963d2ebd540563a501ff27a4626c3dc1",
+    "content-hash": "e43b96592e1141c90f6df8933b11335c",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -636,30 +636,28 @@
         },
         {
             "name": "doctrine/lexer",
-            "version": "1.1.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/lexer.git",
-                "reference": "e17f069ede36f7534b95adec71910ed1b49c74ea"
+                "reference": "1febd6c3ef84253d7c815bed85fc622ad207a9f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/lexer/zipball/e17f069ede36f7534b95adec71910ed1b49c74ea",
-                "reference": "e17f069ede36f7534b95adec71910ed1b49c74ea",
+                "url": "https://api.github.com/repos/doctrine/lexer/zipball/1febd6c3ef84253d7c815bed85fc622ad207a9f8",
+                "reference": "1febd6c3ef84253d7c815bed85fc622ad207a9f8",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": ">=5.3.2"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^6.0",
-                "phpstan/phpstan": "^0.11.8",
-                "phpunit/phpunit": "^8.2"
+                "phpunit/phpunit": "^4.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -673,12 +671,12 @@
             ],
             "authors": [
                 {
-                    "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
-                },
-                {
                     "name": "Roman Borschel",
                     "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
                 },
                 {
                     "name": "Johannes Schmitt",
@@ -694,7 +692,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-07-30T19:33:28+00:00"
+            "time": "2019-06-08T11:03:04+00:00"
         },
         {
             "name": "doctrine/orm",
@@ -2661,6 +2659,36 @@
                 "templating"
             ],
             "time": "2019-06-18T15:37:11+00:00"
+        },
+        {
+            "name": "vysokeskoly/deb-build",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:vysokeskoly/deb-build.git",
+                "reference": "6bbfbf1cf67f632b43393cd4529af30091165dac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vysokeskoly/deb-build/zipball/6bbfbf1cf67f632b43393cd4529af30091165dac",
+                "reference": "6bbfbf1cf67f632b43393cd4529af30091165dac",
+                "shasum": ""
+            },
+            "require-dev": {
+                "consolidation/robo": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "VysokeSkoly\\Build\\": "src/Build/"
+                }
+            },
+            "description": "Utilities for building deb packages of PHP apps",
+            "support": {
+                "source": "https://github.com/vysokeskoly/deb-build/tree/3.0.1",
+                "issues": "https://github.com/vysokeskoly/deb-build/issues"
+            },
+            "time": "2017-11-27T12:26:45+00:00"
         }
     ],
     "packages-dev": [
@@ -5600,5 +5628,8 @@
     "platform": {
         "php": ">=7.1"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "7.1.13"
+    }
 }

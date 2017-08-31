@@ -32,7 +32,8 @@
         "symfony/monolog-bundle": "^3.1.0",
         "symfony/polyfill-apcu": "^1.0",
         "symfony/symfony": "^3.4",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+        "vysokeskoly/deb-build": "^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.1",
@@ -44,6 +45,12 @@
         "squizlabs/php_codesniffer": "^2.8",
         "symfony/phpunit-bridge": "^3.0"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://satis.vysokeskoly.cz/"
+        }
+    ],
     "scripts": {
         "symfony-scripts": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -74,7 +81,11 @@
         ]
     },
     "config": {
-        "sort-packages": true
+        "platform": {
+            "php": "7.1.13"
+        },
+        "sort-packages": true,
+        "secure-http": false
     },
     "extra": {
         "symfony-app-dir": "app",
