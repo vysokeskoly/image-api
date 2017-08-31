@@ -500,6 +500,9 @@
     "twig/twig": {
         "version": "v3.3.2"
     },
+    "vysokeskoly/deb-build": {
+        "version": "3.0.1"
+    },
     "webmozart/assert": {
         "version": "1.10.0"
     }

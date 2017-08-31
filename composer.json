@@ -51,7 +51,8 @@
         "symfony/web-profiler-bundle": "^5.2",
         "symfony/yaml": "5.2.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "vysokeskoly/deb-build": "^3.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
@@ -63,6 +64,13 @@
         "phpstan/phpstan-phpunit": "^0.12.19",
         "phpunit/phpunit": "^9.5"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://satis.vysokeskoly.cz/",
+            "canonical": false
+        }
+    ],
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
@@ -104,7 +112,8 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "secure-http": false
     },
     "conflict": {
         "symfony/symfony": "*"

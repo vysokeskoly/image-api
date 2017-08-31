@@ -22,3 +22,18 @@ All routes have optional parameter `?namespace=...` which will be used as _sub d
 ```shell
 symfony server:start
 ```
+
+
+## Build deb package
+
+### Before 1st run only
+- make sure you are building deb on `Ubuntu`
+
+```bash
+./install-deb-dependencies.sh
+```
+
+### Build deb
+```bash
+./build-deb.sh
+```

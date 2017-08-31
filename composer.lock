@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "969b9d05fa4e32afa4a8bfc3b001170d",
+    "content-hash": "d18018c6023dded6a824786d978c9744",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6035,6 +6035,36 @@
                 }
             ],
             "time": "2021-05-16T12:14:13+00:00"
+        },
+        {
+            "name": "vysokeskoly/deb-build",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:vysokeskoly/deb-build.git",
+                "reference": "6bbfbf1cf67f632b43393cd4529af30091165dac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vysokeskoly/deb-build/zipball/6bbfbf1cf67f632b43393cd4529af30091165dac",
+                "reference": "6bbfbf1cf67f632b43393cd4529af30091165dac",
+                "shasum": ""
+            },
+            "require-dev": {
+                "consolidation/robo": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "VysokeSkoly\\Build\\": "src/Build/"
+                }
+            },
+            "description": "Utilities for building deb packages of PHP apps",
+            "support": {
+                "source": "https://github.com/vysokeskoly/deb-build/tree/3.0.1",
+                "issues": "https://github.com/vysokeskoly/deb-build/issues"
+            },
+            "time": "2017-11-27T12:26:45+00:00"
         }
     ],
     "packages-dev": [
