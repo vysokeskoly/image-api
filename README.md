@@ -15,3 +15,18 @@ Api for storing images
 | Get       | `/image/:fileName`    | GET       |
 | Delete    | `/image/:fileName`    | DELETE    |
 | List all  | `/list/`              | GET       |
+
+
+## Build deb package
+
+### Before 1st run only
+- make sure you are building deb on `Ubuntu`
+
+```bash
+./install-deb-dependencies.sh
+```
+
+### Build deb
+```bash
+./build-deb.sh
+```
