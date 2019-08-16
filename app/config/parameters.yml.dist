@@ -8,3 +8,4 @@ parameters:
     api_key: default_api_key
 
     storage_path: /srv/dynamic/storage/
+    default_namespace: my-images

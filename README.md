@@ -15,3 +15,5 @@ Api for storing images
 | Get       | `/image/:fileName`    | GET       |
 | Delete    | `/image/:fileName`    | DELETE    |
 | List all  | `/list/`              | GET       |
+
+All routes has optional parameter `?namespace=...` which will be used as _sub directory_ in your storage path.

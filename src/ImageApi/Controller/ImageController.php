@@ -13,8 +13,7 @@ use VysokeSkoly\ImageApi\Facade\StorageFacade;
 class ImageController extends Controller
 {
     /**
-     * @Route("/image/")
-     * @Method("POST")
+     * @Route("/image/", methods={"POST"})
      */
     public function postImageAction(Request $request): JsonResponse
     {
@@ -27,8 +26,7 @@ class ImageController extends Controller
     }
 
     /**
-     * @Route("/image/{fileName}")
-     * @Method("GET")
+     * @Route("/image/{fileName}", methods={"GET"})
      */
     public function getImageAction(Request $request, string $fileName): Response
     {
@@ -43,8 +41,7 @@ class ImageController extends Controller
     }
 
     /**
-     * @Route("/image/{fileName}")
-     * @Method("DELETE")
+     * @Route("/image/{fileName}", methods={"DELETE"})
      */
     public function deleteImageAction(Request $request, string $fileName): JsonResponse
     {
@@ -57,11 +54,10 @@ class ImageController extends Controller
     }
 
     /**
-     * @Route("/list/")
-     * @Method("GET")
+     * @Route("/list/", methods={"GET"})
      */
     public function getListAction()
     {
-        return $this->json($this->get(StorageFacade::class)->listAll(), 200);
+        return $this->json($this->get(StorageFacade::class)->listAll());
     }
 }

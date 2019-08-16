@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use VysokeSkoly\ImageApi\Entity\Status;
+use VysokeSkoly\ImageApi\Service\NamespaceService;
 
 class StorageFacade
 {
@@ -18,17 +19,18 @@ class StorageFacade
 
     /** @var string */
     private $storagePath;
-
+    /** @var NamespaceService */
+    private $namespaceService;
     /** @var Filesystem */
     private $fileSystem;
-
     /** @var Status */
     private $status;
 
-    public function __construct(string $storagePath, Filesystem $fileSystem)
+    public function __construct(string $storagePath, NamespaceService $namespaceService, Filesystem $fileSystem)
     {
         $this->storagePath = $storagePath;
         $this->fileSystem = $fileSystem;
+        $this->namespaceService = $namespaceService;
     }
 
     public function saveFiles(FileBag $files): void
@@ -47,7 +49,7 @@ class StorageFacade
         foreach ($uploadedFiles as $uploadedFile) {
             try {
                 $fileName = $uploadedFile->getClientOriginalName();
-                $file = $uploadedFile->move($this->storagePath, $fileName);
+                $file = $uploadedFile->move($this->getStoragePath(), $fileName);
 
                 Assertion::file($file->getRealPath());
                 Assertion::same($fileName, $file->getFilename());
@@ -56,6 +58,11 @@ class StorageFacade
                 $this->createErrorStatus($e);
             }
         }
+    }
+
+    private function getStoragePath(): string
+    {
+        return sprintf('%s/%s/', rtrim($this->storagePath, '/'), $this->namespaceService->getNamespace());
     }
 
     private function createSuccessStatus(string $fileName): void
@@ -71,7 +78,7 @@ class StorageFacade
     public function delete(string $fileName): void
     {
         try {
-            $filePath = $this->storagePath . $fileName;
+            $filePath = $this->getStoragePath() . $fileName;
             if (!$this->fileSystem->exists($filePath)) {
                 throw $this->createNotFoundException($fileName);
             }
@@ -103,14 +110,14 @@ class StorageFacade
                 function (SplFileInfo $file) {
                     return $file->getFilename();
                 },
-                iterator_to_array((new Finder())->files()->in($this->storagePath)->depth('== 0'))
+                iterator_to_array((new Finder())->files()->in($this->getStoragePath())->depth('== 0'))
             )
         );
     }
 
     public function getImage(string $fileName): ?string
     {
-        $filePath = $this->storagePath . $fileName;
+        $filePath = $this->getStoragePath() . $fileName;
         $exists = $this->fileSystem->exists($filePath);
 
         $exists
