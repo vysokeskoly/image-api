@@ -19,3 +19,8 @@
 /web/bundles/
 
 code-coverage
+
+# tools
+/tools/**
+!/tools/*/composer.json
+bin/pre-build-console
