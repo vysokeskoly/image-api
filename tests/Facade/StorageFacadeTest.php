@@ -9,25 +9,30 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use VysokeSkoly\ImageApi\Facade\StorageFacade;
+use VysokeSkoly\ImageApi\Service\NamespaceService;
 use VysokeSkoly\Tests\ImageApi\AbstractTestCase;
 
 class StorageFacadeTest extends AbstractTestCase
 {
-    const UPLOAD_PATH = __DIR__ . '/../Fixtures/';
+    const STORAGE_PATH = __DIR__ . '/../Fixtures/';
+    const DEFAULT_NAMESPACE = 'default';
+
+    const EXPECTED_UPLOAD_PATH = __DIR__ . '/../Fixtures/' . self::DEFAULT_NAMESPACE . '/';
 
     /** @var StorageFacade */
     private $storage;
-
     /** @var Filesystem|m\MockInterface */
     private $fileSystem;
 
     public function setUp()
     {
         $this->fileSystem = m::mock(Filesystem::class);
+        $namespaceService = new NamespaceService(new RequestStack(), self::DEFAULT_NAMESPACE);
 
-        $this->storage = new StorageFacade(self::UPLOAD_PATH, $this->fileSystem);
+        $this->storage = new StorageFacade(self::STORAGE_PATH, $namespaceService, $this->fileSystem);
     }
 
     public function testShouldGetNoFileStatus()
@@ -56,12 +61,12 @@ class StorageFacadeTest extends AbstractTestCase
             ],
         ];
 
-        $file = new File(__DIR__ . '/../Fixtures/' . $fileName);
+        $file = new File(self::EXPECTED_UPLOAD_PATH . $fileName);
 
         $uploadedFile = $this->mockUploadedFile($fileName);
         $uploadedFile->expects($this->once())
             ->method('move')
-            ->with(self::UPLOAD_PATH, $fileName)
+            ->with(self::EXPECTED_UPLOAD_PATH, $fileName)
             ->willReturn($file);
 
         $files = new FileBag([$uploadedFile]);
@@ -104,7 +109,7 @@ class StorageFacadeTest extends AbstractTestCase
         $uploadedFile = $this->mockUploadedFile($fileName);
         $uploadedFile->expects($this->once())
             ->method('move')
-            ->with(self::UPLOAD_PATH, $fileName)
+            ->with(self::EXPECTED_UPLOAD_PATH, $fileName)
             ->willThrowException(new \Exception($errorMessage));
 
         $files = new FileBag([$uploadedFile]);
@@ -118,7 +123,7 @@ class StorageFacadeTest extends AbstractTestCase
     public function testShouldDeleteFile()
     {
         $fileName = 'file-to-delete';
-        $filePath = self::UPLOAD_PATH . $fileName;
+        $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
         $expectedStatus = [
             'status' => 'OK',
             'isSuccess' => true,
@@ -142,7 +147,7 @@ class StorageFacadeTest extends AbstractTestCase
     public function testShouldReturnNotFoundStatusOnDelete()
     {
         $fileName = 'file-to-delete';
-        $filePath = self::UPLOAD_PATH . $fileName;
+        $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
         $expectedStatus = [
             'status' => 'ERROR',
             'isSuccess' => false,
@@ -168,7 +173,7 @@ class StorageFacadeTest extends AbstractTestCase
     public function testShouldReturnErrorStatusOnDelete()
     {
         $fileName = 'file-to-delete';
-        $filePath = self::UPLOAD_PATH . $fileName;
+        $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
         $errorMessage = 'error-message';
         $expectedStatus = [
             'status' => 'ERROR',
@@ -207,7 +212,7 @@ class StorageFacadeTest extends AbstractTestCase
     {
         $fileName = 'file';
         $content = 'content';
-        $filePath = self::UPLOAD_PATH . $fileName;
+        $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
         $expectedStatus = [
             'status' => 'OK',
             'isSuccess' => true,
@@ -235,7 +240,7 @@ class StorageFacadeTest extends AbstractTestCase
     {
         $fileName = 'file';
         $content = 'content';
-        $filePath = self::UPLOAD_PATH . $fileName;
+        $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
         $errorMessage = sprintf('File \'%s\' was not found.', $fileName);
         $expectedStatus = [
             'status' => 'ERROR',
