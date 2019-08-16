@@ -93,10 +93,12 @@
             "@phpstan"
         ],
         "installTools": [
-            "cd tools/coding-standards && composer install && composer link"
+            "cd tools/coding-standards && composer install && composer link",
+            "cd tools/pre-build && composer install && composer link"
         ],
         "updateTools": [
-            "cd tools/coding-standards && composer update && composer link"
+            "cd tools/coding-standards && composer update && composer link",
+            "cd tools/pre-build && composer update && composer link"
         ],
         "test": "bin/phpunit -c phpunit.xml.dist",
         "tests-ci": "mkdir -p code-coverage && php -dxdebug.coverage_enable=1 bin/phpunit -c phpunit.xml.dist",

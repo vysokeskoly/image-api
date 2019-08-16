@@ -27,6 +27,7 @@ code-coverage
 # tools
 /tools/**
 !/tools/*/composer.*
+bin/pre-build-console
 
 ###> symfony/framework-bundle ###
 /.env.local
