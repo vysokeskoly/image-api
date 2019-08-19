@@ -10,6 +10,8 @@ class NamespaceService
     private $requestStack;
     /** @var string */
     private $defaultNamespace;
+    /** @var string|null */
+    private $namespace;
 
     public function __construct(RequestStack $requestStack, string $defaultNamespace)
     {
@@ -17,8 +19,17 @@ class NamespaceService
         $this->requestStack = $requestStack;
     }
 
+    public function useNamespace(string $namespace): void
+    {
+        $this->namespace = $namespace;
+    }
+
     public function getNamespace(): string
     {
+        if (!empty($this->namespace)) {
+            return $this->namespace;
+        }
+
         $request = $this->requestStack->getCurrentRequest() ?? $this->requestStack->getMasterRequest();
 
         $namespace = $request !== null

@@ -2,7 +2,6 @@
 
 namespace VysokeSkoly\ImageApi\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,9 +14,8 @@ class ImageController extends Controller
     /**
      * @Route("/image/", methods={"POST"})
      */
-    public function postImageAction(Request $request): JsonResponse
+    public function postImageAction(StorageFacade $storage, Request $request): JsonResponse
     {
-        $storage = $this->get(StorageFacade::class);
         $storage->saveFiles($request->files);
 
         $status = $storage->getStatus();
@@ -28,9 +26,8 @@ class ImageController extends Controller
     /**
      * @Route("/image/{fileName}", methods={"GET"})
      */
-    public function getImageAction(Request $request, string $fileName): Response
+    public function getImageAction(StorageFacade $storage, Request $request, string $fileName): Response
     {
-        $storage = $this->get(StorageFacade::class);
         $image = $storage->getImage($fileName);
 
         $status = $storage->getStatus();
@@ -43,9 +40,8 @@ class ImageController extends Controller
     /**
      * @Route("/image/{fileName}", methods={"DELETE"})
      */
-    public function deleteImageAction(Request $request, string $fileName): JsonResponse
+    public function deleteImageAction(StorageFacade $storage, Request $request, string $fileName): JsonResponse
     {
-        $storage = $this->get(StorageFacade::class);
         $storage->delete($fileName);
 
         $status = $storage->getStatus();
@@ -56,8 +52,8 @@ class ImageController extends Controller
     /**
      * @Route("/list/", methods={"GET"})
      */
-    public function getListAction()
+    public function getListAction(StorageFacade $storage): JsonResponse
     {
-        return $this->json($this->get(StorageFacade::class)->listAll());
+        return $this->json($storage->listAll());
     }
 }
