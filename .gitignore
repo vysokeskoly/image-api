@@ -1,7 +1,11 @@
 /.web-server-pid
-/app/config/parameters.yml
+/config/parameters.yml
 /build/
 /phpunit.xml
+.phpunit.result.cache
+
+bin/
+!bin/console
 
 /var/*
 !/var/cache
@@ -19,3 +23,24 @@
 /web/bundles/
 
 code-coverage
+
+# tools
+/tools/**
+!/tools/*/composer.*
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+config/*.local.*
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
