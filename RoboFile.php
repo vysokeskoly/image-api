@@ -4,6 +4,7 @@ require __DIR__ . '/vendor/vysokeskoly/deb-build/src/autoload.php';
 
 use Robo\Common\ResourceExistenceChecker;
 use Robo\Tasks;
+use Symfony\Component\Finder\Finder;
 use VysokeSkoly\Build\ComposerParserTrait;
 use VysokeSkoly\Build\FpmCheckerTrait;
 use VysokeSkoly\Build\PackageVersionerTrait;
@@ -40,6 +41,7 @@ class RoboFile extends Tasks
             return 1;
         }
 
+        $sourceDir = __DIR__;
         $packageName = 'vysokeskoly-image-api';
         $packageVersion = $this->assemblePackageVersion($isDevBuild);
         $versionIteration = $this->assembleVersionIteration();
@@ -57,8 +59,11 @@ class RoboFile extends Tasks
             ->run();
 
         // Generate postinst script
-        $postinstResult = $this->taskPostinst($packageName, $appInstallDir . '/' . self::POSTINST_DIR,
-            self::INSTALL_DIR)
+        $postinstResult = $this->taskPostinst(
+            $packageName,
+            $appInstallDir . '/' . self::POSTINST_DIR,
+            self::INSTALL_DIR
+        )
             ->args([
                 'www-data', // runtime files owner
                 'www-data', // runtime files group
@@ -68,14 +73,24 @@ class RoboFile extends Tasks
         $postinstPath = $postinstResult['path'];
 
         // Copy required directories
-        foreach (['app', 'bin', 'src', 'vendor', 'web'] as $directoryToCopy) {
-            $this->_copyDir(__DIR__ . '/' . $directoryToCopy, $appInstallDir . '/' . $directoryToCopy);
+        foreach ([
+                     'config',
+                     'src',
+                     'templates',
+                     'translations',
+                     'vendor',
+                     'public',
+                 ] as $directoryToCopy) {
+            $this->_copyDir($sourceDir . '/' . $directoryToCopy, $appInstallDir . '/' . $directoryToCopy);
         }
 
         // Copy required files
-        foreach (['robo.phar', 'composer.json', 'composer.lock', 'RoboFile.php'] as $fileToCopy) {
-            $this->_copy(__DIR__ . '/' . $fileToCopy, $appInstallDir . '/' . $fileToCopy);
+        foreach (['bin/console', 'robo.phar', 'composer.json', 'composer.lock', 'RoboFile.php'] as $fileToCopy) {
+            $this->_copy($sourceDir . '/' . $fileToCopy, $appInstallDir . '/' . $fileToCopy);
         }
+
+        // Create empty .env file
+        $this->_touch($appInstallDir . '/' . '.env');
 
         // Generate buildinfo.xml
         $this->taskBuildinfo($appInstallDir . '/var/buildinfo.xml')
@@ -85,10 +100,13 @@ class RoboFile extends Tasks
 
         // Even when packages are installed using `composer install --no-dev`, they often contains unneeded files.
         $vendorDirectoriesToDelete = [
+            'ocramius/proxy-manager/html-docs',
+            'ocramius/proxy-manager/tests',
             'twig/twig/test',
-            'guzzle/guzzle/docs',
-            'guzzle/guzzle/tests',
+            'guzzlehttp/guzzle/docs',
+            'guzzlehttp/guzzle/tests',
             'monolog/monolog/tests',
+            'mobiledetect/mobiledetectlib/tests',
         ];
 
         // Clean unwanted vendor directories
@@ -121,10 +139,12 @@ class RoboFile extends Tasks
             ->args(['--version', $packageVersion])
             ->args(['--iteration', $versionIteration])
             ->args(['-C', $buildRootDir])// change directory to here before searching for files
+            // PHP Extensions
             ->args(['--depends', 'php-common'])
             ->args(['--depends', 'php-cli'])
             ->args(['--depends', 'vysokeskoly-apache-common'])
             ->args(['--deb-activate', 'apache-common-reload'])
+            // Post install
             ->args(['--after-install', $postinstPath])
             // Files placed in /etc wouldn't be overridden on package update without following flag:
             ->arg('--deb-no-default-config-files')
@@ -146,10 +166,12 @@ class RoboFile extends Tasks
     {
         $this->stopOnFail();
 
+        $installDir = '/' . self::INSTALL_DIR;
+
         // Setup rights recursively
         $directoriesToChmod = [
+            $installDir,
             '/' . self::VHOST_DIR,
-            '/' . self::INSTALL_DIR,
         ];
         foreach ($directoriesToChmod as $directoryToChmod) {
             $this->taskFilesystemHelper()
@@ -159,47 +181,26 @@ class RoboFile extends Tasks
         }
 
         // Do hard cache clean
-        $cacheDir = '/' . self::INSTALL_DIR . '/var/cache';
+        $cacheDir = $installDir . '/var/cache';
         if ($this->isFile($cacheDir)) {
             $this->_cleanDir($cacheDir);
         }
 
-        // Build Symfony bootstrap
-        $this->taskExec('php ./vendor/sensio/distribution-bundle/Resources/bin/build_bootstrap.php')
-            ->arg('./var')
-            ->arg('./app')
-            ->arg('--use-new-directory-structure')
-            ->dir('/' . self::INSTALL_DIR)
-            ->run();
-
         // Clean and warm-up app cache
-        $commands = [
-            'cache:clear' => ['--no-warmup'],
-            'cache:warmup' => [],
-        ];
-        foreach (['dev' => false, 'prod' => true] as $symfonyEnvironment => $withNoDebug) {
-            foreach ($commands as $command => $args) {
-                $commandArgs = [
-                    $command,
-                    '--env=' . $symfonyEnvironment,
-                ];
-
-                if ($withNoDebug) {
-                    $commandArgs[] = '--no-debug';
-                }
-
-                $this->taskExec(self::BIN_CONSOLE_HIGH_MEMORY)
-                    ->args(array_merge($commandArgs, $args))
-                    ->dir('/' . self::INSTALL_DIR)
-                    ->run();
-            }
+        foreach (['dev', 'prod'] as $symfonyEnvironment) {
+            $this->taskExec('php -d memory_limit=256M ./bin/console')
+                ->arg('cache:clear')
+                ->arg('--env=' . $symfonyEnvironment)
+                ->dir($installDir)
+                ->run();
         }
 
         // Make var/ directory (containing cache and logs) recursively owned and writable for given user
-        $varDirectory = '/' . self::INSTALL_DIR . '/var';
+        $varDirectory = $installDir . '/var';
         $this->taskFilesystemStack()
             ->chown($varDirectory, $runtimeFilesOwner, true)
-            ->chgrp($varDirectory, $runtimeFilesGroup, true)
+            ->chgrp($varDirectory, $runtimeFilesOwner, true)// group is the same as user
+            ->chmod($varDirectory, 0755)// writable by user
             ->run();
 
         $this->taskFilesystemHelper()
@@ -207,10 +208,11 @@ class RoboFile extends Tasks
             ->chmodRecursivelyWritableByUserReadableByOthers()
             ->run();
 
-        $this->taskExec(self::BIN_CONSOLE)
-            ->arg('assets:install')
-            ->arg('./web')
-            ->dir('/' . self::INSTALL_DIR)
+        // Copy assets
+        $this->taskExec('php ./bin/console assets:install ./public')
+            ->dir($installDir)
             ->run();
+
+        return 0;
     }
 }
