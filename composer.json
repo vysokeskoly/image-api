@@ -3,7 +3,7 @@
     "description": "Image Api as Storage for images",
     "license": "proprietary",
     "type": "project",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "autoload": {
         "psr-4": {
             "VysokeSkoly\\ImageApi\\": "src"
