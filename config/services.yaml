@@ -1,0 +1,33 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+imports:
+    - { resource: parameters.yaml }
+    - { resource: parameters.local.yaml, ignore_errors: true }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $storagePath: '%storage_path%'
+            $defaultNamespace: '%default_namespace%'
+            $isDebug: "%kernel.debug%"
+            $apiKey: "%api_key%"
+
+    VysokeSkoly\ImageApi\:
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    VysokeSkoly\ImageApi\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']

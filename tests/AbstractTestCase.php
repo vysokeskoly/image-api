@@ -1,15 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace VysokeSkoly\Tests\ImageApi;
+namespace VysokeSkoly\ImageApi;
 
-use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTestCase extends TestCase
 {
-    protected function tearDown()
-    {
-        m::close();
-        parent::tearDown();
-    }
+    use MockeryPHPUnitIntegration;
 }

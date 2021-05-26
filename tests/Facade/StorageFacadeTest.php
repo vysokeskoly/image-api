@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace VysokeSkoly\Tests\ImageApi\Facade;
+namespace VysokeSkoly\ImageApi\Facade;
 
 use Mockery as m;
 use phpmock\mockery\PHPMockery;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
@@ -11,23 +12,21 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use VysokeSkoly\ImageApi\Facade\StorageFacade;
+use VysokeSkoly\ImageApi\AbstractTestCase;
 use VysokeSkoly\ImageApi\Service\NamespaceService;
-use VysokeSkoly\Tests\ImageApi\AbstractTestCase;
 
 class StorageFacadeTest extends AbstractTestCase
 {
-    const STORAGE_PATH = __DIR__ . '/../Fixtures/';
-    const DEFAULT_NAMESPACE = 'default';
+    public const STORAGE_PATH = __DIR__ . '/../Fixtures/';
+    public const DEFAULT_NAMESPACE = 'default';
 
-    const EXPECTED_UPLOAD_PATH = __DIR__ . '/../Fixtures/' . self::DEFAULT_NAMESPACE . '/';
+    public const EXPECTED_UPLOAD_PATH = __DIR__ . '/../Fixtures/' . self::DEFAULT_NAMESPACE . '/';
 
-    /** @var StorageFacade */
-    private $storage;
+    private StorageFacade $storage;
     /** @var Filesystem|m\MockInterface */
-    private $fileSystem;
+    private Filesystem $fileSystem;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fileSystem = m::mock(Filesystem::class);
         $namespaceService = new NamespaceService(new RequestStack(), self::DEFAULT_NAMESPACE);
@@ -35,7 +34,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->storage = new StorageFacade(self::STORAGE_PATH, $namespaceService, $this->fileSystem);
     }
 
-    public function testShouldGetNoFileStatus()
+    public function testShouldGetNoFileStatus(): void
     {
         $emptyFileBag = new FileBag([]);
         $expectedStatus = [
@@ -50,7 +49,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame($expectedStatus, $status->toArray());
     }
 
-    public function testShouldSaveUploadedFilesAndGetStatus()
+    public function testShouldSaveUploadedFilesAndGetStatus(): void
     {
         $fileName = 'file';
         $expectedStatus = [
@@ -80,9 +79,9 @@ class StorageFacadeTest extends AbstractTestCase
     }
 
     /**
-     * @return UploadedFile|\PHPUnit_Framework_MockObject_MockObject
+     * @return UploadedFile|MockObject
      */
-    private function mockUploadedFile(string $fileName)
+    private function mockUploadedFile(string $fileName): UploadedFile
     {
         $uploadedFile = $this->createMock(UploadedFile::class);
 
@@ -93,7 +92,7 @@ class StorageFacadeTest extends AbstractTestCase
         return $uploadedFile;
     }
 
-    public function testShouldGetErrorStatus()
+    public function testShouldGetErrorStatus(): void
     {
         $errorMessage = 'error - message';
         $fileName = 'fileName';
@@ -120,7 +119,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame($expectedStatus, $status->toArray());
     }
 
-    public function testShouldDeleteFile()
+    public function testShouldDeleteFile(): void
     {
         $fileName = 'file-to-delete';
         $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
@@ -144,7 +143,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame($expectedStatus, $status->toArray());
     }
 
-    public function testShouldReturnNotFoundStatusOnDelete()
+    public function testShouldReturnNotFoundStatusOnDelete(): void
     {
         $fileName = 'file-to-delete';
         $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
@@ -170,7 +169,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame(404, $status->getStatusCode());
     }
 
-    public function testShouldReturnErrorStatusOnDelete()
+    public function testShouldReturnErrorStatusOnDelete(): void
     {
         $fileName = 'file-to-delete';
         $filePath = self::EXPECTED_UPLOAD_PATH . $fileName;
@@ -199,7 +198,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame(500, $status->getStatusCode());
     }
 
-    public function testShouldListAllFromStorage()
+    public function testShouldListAllFromStorage(): void
     {
         $expectedFiles = ['file'];
 
@@ -208,7 +207,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame($expectedFiles, $list);
     }
 
-    public function testShouldGetImage()
+    public function testShouldGetImage(): void
     {
         $fileName = 'file';
         $content = 'content';
@@ -236,7 +235,7 @@ class StorageFacadeTest extends AbstractTestCase
         $this->assertSame($expectedStatus, $status->toArray());
     }
 
-    public function testShouldNotFindImage()
+    public function testShouldNotFindImage(): void
     {
         $fileName = 'file';
         $content = 'content';

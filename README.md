@@ -16,4 +16,9 @@ Api for storing images
 | Delete    | `/image/:fileName`    | DELETE    |
 | List all  | `/list/`              | GET       |
 
-All routes has optional parameter `?namespace=...` which will be used as _sub directory_ in your storage path.
+All routes have optional parameter `?namespace=...` which will be used as _sub directory_ in your storage path.
+
+## Run locally
+```shell
+symfony server:start
+```
