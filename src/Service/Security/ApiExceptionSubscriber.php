@@ -10,8 +10,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ApiExceptionSubscriber implements EventSubscriberInterface
 {
-    private bool $isDebug;
-
     public static function getSubscribedEvents()
     {
         return [
@@ -19,9 +17,8 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function __construct(bool $isDebug)
+    public function __construct(private bool $isDebug)
     {
-        $this->isDebug = $isDebug;
     }
 
     public function onKernelException(ExceptionEvent $event): void

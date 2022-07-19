@@ -6,14 +6,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class NamespaceService
 {
-    private RequestStack $requestStack;
-    private string $defaultNamespace;
     private ?string $namespace;
 
-    public function __construct(RequestStack $requestStack, string $defaultNamespace)
+    public function __construct(private RequestStack $requestStack, private string $defaultNamespace)
     {
-        $this->defaultNamespace = $defaultNamespace;
-        $this->requestStack = $requestStack;
     }
 
     public function useNamespace(string $namespace): void
@@ -27,11 +23,9 @@ class NamespaceService
             return $this->namespace;
         }
 
-        $request = $this->requestStack->getCurrentRequest() ?? $this->requestStack->getMasterRequest();
+        $request = $this->requestStack->getCurrentRequest() ?? $this->requestStack->getMainRequest();
 
-        $namespace = $request !== null
-            ? $request->query->get('namespace', $this->defaultNamespace)
-            : $this->defaultNamespace;
+        $namespace = $request?->query->get('namespace', $this->defaultNamespace) ?? $this->defaultNamespace;
 
         return rtrim((string) $namespace, ' /');
     }
