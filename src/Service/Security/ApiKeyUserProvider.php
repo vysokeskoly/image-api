@@ -10,11 +10,8 @@ use VysokeSkoly\ImageApi\Entity\Security\User;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-    private string $apiKey;
-
-    public function __construct(string $apiKey)
+    public function __construct(private string $apiKey)
     {
-        $this->apiKey = $apiKey;
     }
 
     /** @deprecated todo remove on symfony 6 */

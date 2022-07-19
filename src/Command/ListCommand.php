@@ -13,17 +13,10 @@ use VysokeSkoly\ImageApi\Service\NamespaceService;
 
 class ListCommand extends Command
 {
-    private string $defaultNamespace;
-    private NamespaceService $namespaceService;
-    private StorageFacade $storage;
     private SymfonyStyle $io;
 
-    public function __construct(string $defaultNamespace, NamespaceService $namespaceService, StorageFacade $storage)
+    public function __construct(private string $defaultNamespace, private NamespaceService $namespaceService, private StorageFacade $storage)
     {
-        $this->defaultNamespace = $defaultNamespace;
-        $this->namespaceService = $namespaceService;
-        $this->storage = $storage;
-
         parent::__construct();
     }
 
