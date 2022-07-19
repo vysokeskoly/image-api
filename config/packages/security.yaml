@@ -1,5 +1,8 @@
 security:
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    # https://symfony.com/doc/5.4/security/custom_authenticator.html
+    enable_authenticator_manager: true  # todo - remove on symfony6
+
     providers:
         api:
             id: VysokeSkoly\ImageApi\Service\Security\ApiKeyUserProvider
@@ -14,7 +17,10 @@ security:
         api:
             pattern: ^/
             stateless: true
-            guard:
-                authenticators:
-                    - VysokeSkoly\ImageApi\Service\Security\ApiKeyAuthenticatorGuard
+            custom_authenticators:
+                - VysokeSkoly\ImageApi\Service\Security\ApiKeyAuthenticator
             provider: api
+
+    access_control:
+        # require ROLE_API for all routes except home: /
+        - { path: '^/.+', roles: ROLE_API }

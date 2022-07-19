@@ -2,8 +2,5 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
 
-    excludes_analyse:
+    excludePaths:
         - src/Kernel.php
-
-    ignoreErrors:
-        - '#Cannot cast array<string>\|string\|null to string.#'

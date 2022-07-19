@@ -3,7 +3,7 @@
 namespace VysokeSkoly\ImageApi\Service\Security;
 
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use VysokeSkoly\ImageApi\Entity\Security\User;
@@ -17,20 +17,28 @@ class ApiKeyUserProvider implements UserProviderInterface
         $this->apiKey = $apiKey;
     }
 
+    /** @deprecated todo remove on symfony 6 */
+    public function loadUserByUsername(string $usernameOrApiKey): ?UserInterface
+    {
+        return $this->loadUserByIdentifier($usernameOrApiKey);
+    }
+
+    public function loadUserByIdentifier(string $usernameOrApiKey): ?UserInterface
+    {
+        $username = $this->getUsernameForApiKey($usernameOrApiKey) ?? $usernameOrApiKey;
+
+        if ($username !== User::USERNAME_API) {
+            throw new UserNotFoundException();
+        }
+
+        return new User();
+    }
+
     public function getUsernameForApiKey(string $apiKey): ?string
     {
         return $apiKey === $this->apiKey
             ? User::USERNAME_API
             : null;
-    }
-
-    public function loadUserByUsername(string $username): ?UserInterface
-    {
-        if ($username !== User::USERNAME_API) {
-            throw new UsernameNotFoundException();
-        }
-
-        return new User();
     }
 
     public function refreshUser(UserInterface $user): UserInterface

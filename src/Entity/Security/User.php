@@ -26,10 +26,15 @@ class User implements UserInterface
 
     public function getUsername(): string
     {
-        return self::USERNAME_API;
+        return $this->getUserIdentifier();
     }
 
     public function eraseCredentials(): void
     {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return self::USERNAME_API;
     }
 }
