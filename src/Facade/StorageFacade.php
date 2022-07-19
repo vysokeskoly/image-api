@@ -4,6 +4,7 @@ namespace VysokeSkoly\ImageApi\Facade;
 
 use Assert\Assertion;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -101,14 +102,16 @@ class StorageFacade
 
     public function listAll(): array
     {
-        return array_values(
-            array_map(
-                function (SplFileInfo $file) {
-                    return $file->getFilename();
-                },
-                iterator_to_array((new Finder())->files()->in($this->getStoragePath())->depth('== 0'))
-            )
-        );
+        try {
+            return array_values(
+                array_map(
+                    fn (SplFileInfo $file) => $file->getFilename(),
+                    iterator_to_array((new Finder())->files()->in($this->getStoragePath())->depth('== 0'))
+                )
+            );
+        } catch (DirectoryNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
     }
 
     public function getImage(string $fileName): ?string

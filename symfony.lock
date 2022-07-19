@@ -2,9 +2,6 @@
     "beberlei/assert": {
         "version": "v3.3.1"
     },
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.2"
-    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -499,6 +496,9 @@
     },
     "twig/twig": {
         "version": "v3.3.2"
+    },
+    "vysokeskoly/deb-build": {
+        "version": "3.0.1"
     },
     "webmozart/assert": {
         "version": "1.10.0"

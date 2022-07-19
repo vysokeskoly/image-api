@@ -33,6 +33,6 @@ class NamespaceService
             ? $request->query->get('namespace', $this->defaultNamespace)
             : $this->defaultNamespace;
 
-        return rtrim($namespace, ' /');
+        return rtrim((string) $namespace, ' /');
     }
 }

@@ -7,12 +7,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class ApiKeyAuthenticatorGuard extends AbstractGuardAuthenticator
+class ApiKeyAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     public const API_KEY = 'apikey';
 
@@ -30,35 +31,26 @@ class ApiKeyAuthenticatorGuard extends AbstractGuardAuthenticator
         return $request->request->has(self::API_KEY) || $request->query->has(self::API_KEY);
     }
 
-    public function getCredentials(Request $request): ?string
+    public function authenticate(Request $request): Passport
     {
-        return $request->request->has(self::API_KEY)
-            ? $request->request->get(self::API_KEY)
-            : $request->query->get(self::API_KEY);
-    }
+        $apiKey = $this->getCredentials($request);
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
-    {
-        if ($userProvider instanceof ApiKeyUserProvider) {
-            $username = $userProvider->getUsernameForApiKey($credentials);
-
-            if (!$username) {
-                throw new CustomUserMessageAuthenticationException(
-                    sprintf('API Key "%s" does not exist.', $credentials)
-                );
-            }
-
-            return $userProvider->loadUserByUsername($username);
-        }
-
-        throw new CustomUserMessageAuthenticationException(
-            sprintf('Unexpected user provider given - %s.', get_class($userProvider))
+        return new Passport(
+            new UserBadge($apiKey),
+            new CustomCredentials(
+                fn ($credentials) => !empty($credentials),
+                $apiKey
+            )
         );
     }
 
-    public function checkCredentials($credentials, UserInterface $user): bool
+    public function getCredentials(Request $request): string
     {
-        return true;
+        $apiKey = $request->request->has(self::API_KEY)
+            ? $request->request->get(self::API_KEY)
+            : $request->query->get(self::API_KEY);
+
+        return (string) $apiKey;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
@@ -77,10 +69,5 @@ class ApiKeyAuthenticatorGuard extends AbstractGuardAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?JsonResponse
     {
         return null;
-    }
-
-    public function supportsRememberMe(): bool
-    {
-        return false;
     }
 }

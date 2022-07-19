@@ -22,3 +22,9 @@ All routes have optional parameter `?namespace=...` which will be used as _sub d
 ```shell
 symfony server:start
 ```
+
+## Build deb package
+
+```bash
+bin/build-deb-app
+```
