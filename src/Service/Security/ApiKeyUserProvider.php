@@ -14,15 +14,9 @@ class ApiKeyUserProvider implements UserProviderInterface
     {
     }
 
-    /** @deprecated todo remove on symfony 6 */
-    public function loadUserByUsername(string $usernameOrApiKey): ?UserInterface
+    public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        return $this->loadUserByIdentifier($usernameOrApiKey);
-    }
-
-    public function loadUserByIdentifier(string $usernameOrApiKey): ?UserInterface
-    {
-        $username = $this->getUsernameForApiKey($usernameOrApiKey) ?? $usernameOrApiKey;
+        $username = $this->getUsernameForApiKey($identifier) ?? $identifier;
 
         if ($username !== User::USERNAME_API) {
             throw new UserNotFoundException();

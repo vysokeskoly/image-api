@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "717dcb4013b745e3b7ca68edc71e783d",
+    "content-hash": "757bc03bccff39bb80329c25fe0b86d0",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -74,105 +74,36 @@
             "time": "2021-12-16T21:41:27+00:00"
         },
         {
-            "name": "cpliakas/git-wrapper",
-            "version": "3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cpliakas/git-wrapper.git",
-                "reference": "c2c874237039200659f28d589a8d92a9b0867003"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cpliakas/git-wrapper/zipball/c2c874237039200659f28d589a8d92a9b0867003",
-                "reference": "c2c874237039200659f28d589a8d92a9b0867003",
-                "shasum": ""
-            },
-            "require": {
-                "nette/utils": "^3.0",
-                "php": ">=7.3",
-                "symfony/event-dispatcher": "^4.4|^5.1",
-                "symfony/process": "^4.4|^5.1"
-            },
-            "require-dev": {
-                "ondram/ci-detector": "^3.5",
-                "phpstan/phpstan": "^0.12.64",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpunit/phpunit": "^9.5",
-                "psr/log": "^1.1",
-                "rector/rector": "^0.9",
-                "symfony/filesystem": "^4.4|^5.1",
-                "symplify/changelog-linker": "^9.0",
-                "symplify/easy-coding-standard": "^9.0",
-                "symplify/phpstan-extensions": "^9.0",
-                "symplify/phpstan-rules": "^9.0",
-                "tracy/tracy": "^2.7"
-            },
-            "suggest": {
-                "monolog/monolog": "Enables logging of executed git commands"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "GitWrapper\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Chris Pliakas",
-                    "email": "opensource@chrispliakas.com"
-                },
-                {
-                    "name": "Tomas Votruba",
-                    "email": "tomas.vot@gmail.com"
-                }
-            ],
-            "description": "A PHP wrapper around the Git command line utility.",
-            "keywords": [
-                "cli",
-                "git",
-                "git wrapper"
-            ],
-            "support": {
-                "issues": "https://github.com/cpliakas/git-wrapper/issues",
-                "source": "https://github.com/cpliakas/git-wrapper/tree/3.1.0"
-            },
-            "abandoned": "symplify/git-wrapper",
-            "time": "2021-01-03T12:20:31+00:00"
-        },
-        {
             "name": "mf/collections-php",
-            "version": "6.1.1",
+            "version": "7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MortalFlesh/MFCollectionsPHP.git",
-                "reference": "8abdf2ea76af12e577d77fd002731023ebd60a8b"
+                "reference": "bed1eed8906ca089f521044b4d083cd867968bff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MortalFlesh/MFCollectionsPHP/zipball/8abdf2ea76af12e577d77fd002731023ebd60a8b",
-                "reference": "8abdf2ea76af12e577d77fd002731023ebd60a8b",
+                "url": "https://api.github.com/repos/MortalFlesh/MFCollectionsPHP/zipball/bed1eed8906ca089f521044b4d083cd867968bff",
+                "reference": "bed1eed8906ca089f521044b4d083cd867968bff",
                 "shasum": ""
             },
             "require": {
                 "beberlei/assert": "^3.0",
                 "ext-mbstring": "*",
-                "mf/type-validator": "^4.1",
-                "php": "^8.0"
+                "php": "^8.1"
             },
             "require-dev": {
-                "lmc/coding-standard": "^3.2",
-                "mockery/mockery": "^1.4",
+                "ergebnis/composer-normalize": "^2.25",
+                "lmc/coding-standard": "^3.3",
+                "mockery/mockery": "^1.5",
+                "php-parallel-lint/php-parallel-lint": "^1.3.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^1.3",
-                "phpstan/phpstan-beberlei-assert": "^1.0",
+                "phpstan/phpstan": "^1.5.6",
+                "phpstan/phpstan-beberlei-assert": "^1.0.1",
                 "phpstan/phpstan-mockery": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^9.5",
-                "symfony/var-dumper": "^6.0"
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpunit/phpunit": "^9.5.20",
+                "symfony/var-dumper": "^6.0.6"
             },
             "type": "library",
             "autoload": {
@@ -193,42 +124,44 @@
             "description": "Collections for PHP - It's basically a syntax sugar over classic array structure, which allows you to use it as classic array, but adds some cool features.",
             "support": {
                 "issues": "https://github.com/MortalFlesh/MFCollectionsPHP/issues",
-                "source": "https://github.com/MortalFlesh/MFCollectionsPHP/tree/6.1.1"
+                "source": "https://github.com/MortalFlesh/MFCollectionsPHP/tree/7.0.0"
             },
-            "time": "2022-02-22T17:02:45+00:00"
+            "time": "2022-04-21T16:33:05+00:00"
         },
         {
             "name": "mf/pre-build",
-            "version": "4.2.0",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MortalFlesh/pre-build.git",
-                "reference": "eef9d002dc13135271e1b28a7599edb75d39a775"
+                "reference": "46f84ea7fdc3d0a760a4ecfaf1c6f1172a3ae77b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MortalFlesh/pre-build/zipball/eef9d002dc13135271e1b28a7599edb75d39a775",
-                "reference": "eef9d002dc13135271e1b28a7599edb75d39a775",
+                "url": "https://api.github.com/repos/MortalFlesh/pre-build/zipball/46f84ea7fdc3d0a760a4ecfaf1c6f1172a3ae77b",
+                "reference": "46f84ea7fdc3d0a760a4ecfaf1c6f1172a3ae77b",
                 "shasum": ""
             },
             "require": {
                 "beberlei/assert": "^3.2",
-                "cpliakas/git-wrapper": "^3.0",
-                "mf/collections-php": "^6.1",
-                "php": "^8.0",
+                "mf/collections-php": "^7.0",
+                "php": "^8.1",
                 "symfony/console": "^6.0",
+                "symfony/process": "^6.0",
                 "symfony/yaml": "^6.0",
-                "thecodingmachine/safe": "^1.0"
+                "thecodingmachine/safe": "^2.0"
             },
             "require-dev": {
-                "lmc/coding-standard": "^3.2",
+                "ergebnis/composer-normalize": "^2.28",
+                "lmc/coding-standard": "^3.3",
                 "mockery/mockery": "^1.4",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^1.3",
+                "phpstan/phpstan": "^1.8",
                 "phpstan/phpstan-beberlei-assert": "^1.0",
-                "phpstan/phpstan-mockery": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^9.5",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpunit/phpunit": "^9.5.20",
                 "symfony/var-dumper": "^6.0"
             },
             "bin": [
@@ -257,141 +190,9 @@
             "description": "Pre build commands for exporting variables for building a package",
             "support": {
                 "issues": "https://github.com/MortalFlesh/pre-build/issues",
-                "source": "https://github.com/MortalFlesh/pre-build/tree/4.2.0"
+                "source": "https://github.com/MortalFlesh/pre-build/tree/5.0.0"
             },
-            "time": "2022-01-14T15:17:46+00:00"
-        },
-        {
-            "name": "mf/type-validator",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MortalFlesh/TypeValidator.git",
-                "reference": "eece791ed1c46fe4beccec484bde7fafcd37e1f7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/MortalFlesh/TypeValidator/zipball/eece791ed1c46fe4beccec484bde7fafcd37e1f7",
-                "reference": "eece791ed1c46fe4beccec484bde7fafcd37e1f7",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "lmc/coding-standard": "^3.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^1.3",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MF\\Validator\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Petr Chromec",
-                    "email": "mortal_flesh@seznam.cz"
-                }
-            ],
-            "description": "TypeValidator for asserting types of values",
-            "support": {
-                "issues": "https://github.com/MortalFlesh/TypeValidator/issues",
-                "source": "https://github.com/MortalFlesh/TypeValidator/tree/4.1.0"
-            },
-            "time": "2022-01-14T13:44:36+00:00"
-        },
-        {
-            "name": "nette/utils",
-            "version": "v3.2.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nette/utils.git",
-                "reference": "02a54c4c872b99e4ec05c4aec54b5a06eb0f6368"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/02a54c4c872b99e4ec05c4aec54b5a06eb0f6368",
-                "reference": "02a54c4c872b99e4ec05c4aec54b5a06eb0f6368",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2 <8.3"
-            },
-            "conflict": {
-                "nette/di": "<3.0.6"
-            },
-            "require-dev": {
-                "nette/tester": "~2.0",
-                "phpstan/phpstan": "^1.0",
-                "tracy/tracy": "^2.3"
-            },
-            "suggest": {
-                "ext-gd": "to use Image",
-                "ext-iconv": "to use Strings::webalize(), toAscii(), chr() and reverse()",
-                "ext-intl": "to use Strings::webalize(), toAscii(), normalize() and compare()",
-                "ext-json": "to use Nette\\Utils\\Json",
-                "ext-mbstring": "to use Strings::lower() etc...",
-                "ext-tokenizer": "to use Nette\\Utils\\Reflection::getUseStatements()",
-                "ext-xml": "to use Strings::length() etc. when mbstring is not available"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.2-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause",
-                "GPL-2.0-only",
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "David Grudl",
-                    "homepage": "https://davidgrudl.com"
-                },
-                {
-                    "name": "Nette Community",
-                    "homepage": "https://nette.org/contributors"
-                }
-            ],
-            "description": "🛠  Nette Utils: lightweight utilities for string & array manipulation, image handling, safe JSON encoding/decoding, validation, slug or strong password generating etc.",
-            "homepage": "https://nette.org",
-            "keywords": [
-                "array",
-                "core",
-                "datetime",
-                "images",
-                "json",
-                "nette",
-                "paginator",
-                "password",
-                "slugify",
-                "string",
-                "unicode",
-                "utf-8",
-                "utility",
-                "validation"
-            ],
-            "support": {
-                "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v3.2.8"
-            },
-            "time": "2022-09-12T23:36:20+00:00"
+            "time": "2022-08-03T09:00:47+00:00"
         },
         {
             "name": "psr/container",
@@ -445,56 +246,6 @@
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
             "time": "2021-11-05T16:47:00+00:00"
-        },
-        {
-            "name": "psr/event-dispatcher",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/event-dispatcher.git",
-                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/event-dispatcher/zipball/dbefd12671e8a14ec7f180cab83036ed26714bb0",
-                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\EventDispatcher\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Standard interfaces for event handling.",
-            "keywords": [
-                "events",
-                "psr",
-                "psr-14"
-            ],
-            "support": {
-                "issues": "https://github.com/php-fig/event-dispatcher/issues",
-                "source": "https://github.com/php-fig/event-dispatcher/tree/1.0.0"
-            },
-            "time": "2019-01-08T18:20:26+00:00"
         },
         {
             "name": "symfony/console",
@@ -642,170 +393,6 @@
             "homepage": "https://symfony.com",
             "support": {
                 "source": "https://github.com/symfony/deprecation-contracts/tree/v3.1.1"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-02-25T11:15:52+00:00"
-        },
-        {
-            "name": "symfony/event-dispatcher",
-            "version": "v5.4.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "8e6ce1cc0279e3ff3c8ff0f43813bc88d21ca1bc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/8e6ce1cc0279e3ff3c8ff0f43813bc88d21ca1bc",
-                "reference": "8e6ce1cc0279e3ff3c8ff0f43813bc88d21ca1bc",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2.5",
-                "symfony/deprecation-contracts": "^2.1|^3",
-                "symfony/event-dispatcher-contracts": "^2|^3",
-                "symfony/polyfill-php80": "^1.16"
-            },
-            "conflict": {
-                "symfony/dependency-injection": "<4.4"
-            },
-            "provide": {
-                "psr/event-dispatcher-implementation": "1.0",
-                "symfony/event-dispatcher-implementation": "2.0"
-            },
-            "require-dev": {
-                "psr/log": "^1|^2|^3",
-                "symfony/config": "^4.4|^5.0|^6.0",
-                "symfony/dependency-injection": "^4.4|^5.0|^6.0",
-                "symfony/error-handler": "^4.4|^5.0|^6.0",
-                "symfony/expression-language": "^4.4|^5.0|^6.0",
-                "symfony/http-foundation": "^4.4|^5.0|^6.0",
-                "symfony/service-contracts": "^1.1|^2|^3",
-                "symfony/stopwatch": "^4.4|^5.0|^6.0"
-            },
-            "suggest": {
-                "symfony/dependency-injection": "",
-                "symfony/http-kernel": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\EventDispatcher\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides tools that allow your application components to communicate with each other by dispatching events and listening to them",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/event-dispatcher/tree/v5.4.9"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-05-05T16:45:39+00:00"
-        },
-        {
-            "name": "symfony/event-dispatcher-contracts",
-            "version": "v3.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/event-dispatcher-contracts.git",
-                "reference": "02ff5eea2f453731cfbc6bc215e456b781480448"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/02ff5eea2f453731cfbc6bc215e456b781480448",
-                "reference": "02ff5eea2f453731cfbc6bc215e456b781480448",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1",
-                "psr/event-dispatcher": "^1"
-            },
-            "suggest": {
-                "symfony/event-dispatcher-implementation": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "3.1-dev"
-                },
-                "thanks": {
-                    "name": "symfony/contracts",
-                    "url": "https://github.com/symfony/contracts"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Contracts\\EventDispatcher\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Generic abstractions related to dispatching event",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "abstractions",
-                "contracts",
-                "decoupling",
-                "interfaces",
-                "interoperability",
-                "standards"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -1154,105 +741,21 @@
             "time": "2022-05-24T11:49:31+00:00"
         },
         {
-            "name": "symfony/polyfill-php80",
-            "version": "v1.26.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "cfa0ae98841b9e461207c13ab093d76b0fa7bace"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/cfa0ae98841b9e461207c13ab093d76b0fa7bace",
-                "reference": "cfa0ae98841b9e461207c13ab093d76b0fa7bace",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.26-dev"
-                },
-                "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php80\\": ""
-                },
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ion Bazan",
-                    "email": "ion.bazan@gmail.com"
-                },
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.26.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-05-10T07:21:04+00:00"
-        },
-        {
             "name": "symfony/process",
-            "version": "v5.4.11",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "6e75fe6874cbc7e4773d049616ab450eff537bf1"
+                "reference": "a6506e99cfad7059b1ab5cab395854a0a0c21292"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/6e75fe6874cbc7e4773d049616ab450eff537bf1",
-                "reference": "6e75fe6874cbc7e4773d049616ab450eff537bf1",
+                "url": "https://api.github.com/repos/symfony/process/zipball/a6506e99cfad7059b1ab5cab395854a0a0c21292",
+                "reference": "a6506e99cfad7059b1ab5cab395854a0a0c21292",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
-                "symfony/polyfill-php80": "^1.16"
+                "php": ">=8.1"
             },
             "type": "library",
             "autoload": {
@@ -1280,7 +783,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v5.4.11"
+                "source": "https://github.com/symfony/process/tree/v6.1.3"
             },
             "funding": [
                 {
@@ -1296,7 +799,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-27T16:58:25+00:00"
+            "time": "2022-06-27T17:24:16+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -1544,39 +1047,46 @@
         },
         {
             "name": "thecodingmachine/safe",
-            "version": "v1.3.3",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thecodingmachine/safe.git",
-                "reference": "a8ab0876305a4cdaef31b2350fcb9811b5608dbc"
+                "reference": "e788f3d09dcd36f806350aedb77eac348fafadd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/a8ab0876305a4cdaef31b2350fcb9811b5608dbc",
-                "reference": "a8ab0876305a4cdaef31b2350fcb9811b5608dbc",
+                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/e788f3d09dcd36f806350aedb77eac348fafadd3",
+                "reference": "e788f3d09dcd36f806350aedb77eac348fafadd3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2"
+                "php": "^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan": "^1.5",
+                "phpunit/phpunit": "^9.5",
                 "squizlabs/php_codesniffer": "^3.2",
-                "thecodingmachine/phpstan-strict-rules": "^0.12"
+                "thecodingmachine/phpstan-strict-rules": "^1.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.1-dev"
+                    "dev-master": "2.2.x-dev"
                 }
             },
             "autoload": {
                 "files": [
                     "deprecated/apc.php",
+                    "deprecated/array.php",
+                    "deprecated/datetime.php",
                     "deprecated/libevent.php",
+                    "deprecated/misc.php",
+                    "deprecated/password.php",
                     "deprecated/mssql.php",
                     "deprecated/stats.php",
+                    "deprecated/strings.php",
                     "lib/special_cases.php",
+                    "deprecated/mysqli.php",
                     "generated/apache.php",
                     "generated/apcu.php",
                     "generated/array.php",
@@ -1597,6 +1107,7 @@
                     "generated/fpm.php",
                     "generated/ftp.php",
                     "generated/funchand.php",
+                    "generated/gettext.php",
                     "generated/gmp.php",
                     "generated/gnupg.php",
                     "generated/hash.php",
@@ -1606,7 +1117,6 @@
                     "generated/image.php",
                     "generated/imap.php",
                     "generated/info.php",
-                    "generated/ingres-ii.php",
                     "generated/inotify.php",
                     "generated/json.php",
                     "generated/ldap.php",
@@ -1615,20 +1125,14 @@
                     "generated/mailparse.php",
                     "generated/mbstring.php",
                     "generated/misc.php",
-                    "generated/msql.php",
                     "generated/mysql.php",
-                    "generated/mysqli.php",
-                    "generated/mysqlndMs.php",
-                    "generated/mysqlndQc.php",
                     "generated/network.php",
                     "generated/oci8.php",
                     "generated/opcache.php",
                     "generated/openssl.php",
                     "generated/outcontrol.php",
-                    "generated/password.php",
                     "generated/pcntl.php",
                     "generated/pcre.php",
-                    "generated/pdf.php",
                     "generated/pgsql.php",
                     "generated/posix.php",
                     "generated/ps.php",
@@ -1639,7 +1143,6 @@
                     "generated/sem.php",
                     "generated/session.php",
                     "generated/shmop.php",
-                    "generated/simplexml.php",
                     "generated/sockets.php",
                     "generated/sodium.php",
                     "generated/solr.php",
@@ -1662,13 +1165,13 @@
                     "generated/zip.php",
                     "generated/zlib.php"
                 ],
-                "psr-4": {
-                    "Safe\\": [
-                        "lib/",
-                        "deprecated/",
-                        "generated/"
-                    ]
-                }
+                "classmap": [
+                    "lib/DateTime.php",
+                    "lib/DateTimeImmutable.php",
+                    "lib/Exceptions/",
+                    "deprecated/Exceptions/",
+                    "generated/Exceptions/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1677,9 +1180,9 @@
             "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
             "support": {
                 "issues": "https://github.com/thecodingmachine/safe/issues",
-                "source": "https://github.com/thecodingmachine/safe/tree/v1.3.3"
+                "source": "https://github.com/thecodingmachine/safe/tree/v2.4.0"
             },
-            "time": "2020-10-28T17:51:34+00:00"
+            "time": "2022-10-07T14:02:17+00:00"
         }
     ],
     "packages-dev": [],

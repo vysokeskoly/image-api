@@ -21,8 +21,11 @@ class StorageFacade
 
     private ?Status $status = null;
 
-    public function __construct(private string $storagePath, private NamespaceService $namespaceService, private Filesystem $fileSystem)
-    {
+    public function __construct(
+        private string $storagePath,
+        private NamespaceService $namespaceService,
+        private Filesystem $fileSystem,
+    ) {
     }
 
     public function saveFiles(FileBag $files): void
@@ -103,12 +106,14 @@ class StorageFacade
     public function listAll(): array
     {
         try {
-            return array_values(
-                array_map(
-                    fn (SplFileInfo $file) => $file->getFilename(),
-                    iterator_to_array((new Finder())->files()->in($this->getStoragePath())->depth('== 0')),
-                ),
-            );
+            return Seq::init(
+                (new Finder())
+                    ->files()
+                    ->in($this->getStoragePath())
+                    ->depth('== 0'),
+            )
+                ->map(fn (SplFileInfo $file) => $file->getFilename())
+                ->toArray();
         } catch (DirectoryNotFoundException $e) {
             throw new NotFoundHttpException($e->getMessage());
         }
