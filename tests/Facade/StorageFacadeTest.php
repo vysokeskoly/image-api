@@ -129,11 +129,11 @@ class StorageFacadeTest extends AbstractTestCase
             'messages' => [$fileName],
         ];
 
-        $this->fileSystem->shouldReceive('exists')
+        $this->fileSystem->expects('exists')
             ->with($filePath)
             ->once()
             ->andReturn(true);
-        $this->fileSystem->shouldReceive('remove')
+        $this->fileSystem->expects('remove')
             ->with($filePath)
             ->once();
 
@@ -156,7 +156,7 @@ class StorageFacadeTest extends AbstractTestCase
             ],
         ];
 
-        $this->fileSystem->shouldReceive('exists')
+        $this->fileSystem->expects('exists')
             ->with($filePath)
             ->once()
             ->andReturn(false);
@@ -183,12 +183,13 @@ class StorageFacadeTest extends AbstractTestCase
             ],
         ];
 
-        $this->fileSystem->shouldReceive('exists')
+        $this->fileSystem
+            ->expects('exists')
             ->with($filePath)
             ->once()
             ->andReturn(true);
-        $this->fileSystem->shouldReceive('remove')
-            ->once()
+        $this->fileSystem
+            ->expects('remove')
             ->andThrow(new IOException($errorMessage));
 
         $this->storage->delete($fileName);
@@ -218,7 +219,7 @@ class StorageFacadeTest extends AbstractTestCase
             'messages' => [$fileName],
         ];
 
-        $this->fileSystem->shouldReceive('exists')
+        $this->fileSystem->expects('exists')
             ->with($filePath)
             ->once()
             ->andReturn(true);
@@ -250,7 +251,7 @@ class StorageFacadeTest extends AbstractTestCase
             ],
         ];
 
-        $this->fileSystem->shouldReceive('exists')
+        $this->fileSystem->expects('exists')
             ->with($filePath)
             ->once()
             ->andReturn(false);
