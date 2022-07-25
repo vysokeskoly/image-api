@@ -3,7 +3,7 @@
     "description": "Image Api as Storage for images",
     "license": "proprietary",
     "type": "project",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "require": {
         "php": "^7.4",
         "beberlei/assert": "^3.2",
