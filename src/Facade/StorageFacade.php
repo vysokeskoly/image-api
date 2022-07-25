@@ -3,6 +3,7 @@
 namespace VysokeSkoly\ImageApi\Facade;
 
 use Assert\Assertion;
+use MF\Collection\Immutable\Seq;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
@@ -38,23 +39,28 @@ class StorageFacade
             return;
         }
 
-        $uploadedFiles = array_filter($files->all(), function ($file) {
-            return $file instanceof UploadedFile;
-        });
+        $this->status = Seq::from($files->all())
+            ->filter(fn ($file) => $file instanceof UploadedFile)
+            ->reduce(function (?Status $status, UploadedFile $uploadedFile) {
+                if (!$status || $status->isSuccess()) {
+                    try {
+                        $fileName = $uploadedFile->getClientOriginalName();
+                        if (!$status) {
+                            $status = $this->createSuccessStatus();
+                        }
+                        $file = $uploadedFile->move($this->getStoragePath(), $fileName);
 
-        /** @var UploadedFile $uploadedFile */
-        foreach ($uploadedFiles as $uploadedFile) {
-            try {
-                $fileName = $uploadedFile->getClientOriginalName();
-                $file = $uploadedFile->move($this->getStoragePath(), $fileName);
+                        Assertion::file((string) $file->getRealPath());
+                        Assertion::same($fileName, $file->getFilename());
 
-                Assertion::file((string) $file->getRealPath());
-                Assertion::same($fileName, $file->getFilename());
-                $this->createSuccessStatus($fileName);
-            } catch (\Throwable $e) {
-                $this->createErrorStatus($e);
-            }
-        }
+                        $status->addMessage($fileName);
+                    } catch (\Throwable $e) {
+                        return $this->createErrorStatus($e);
+                    }
+                }
+
+                return $status;
+            });
     }
 
     private function getStoragePath(): string
@@ -62,14 +68,14 @@ class StorageFacade
         return sprintf('%s/%s/', rtrim($this->storagePath, '/'), $this->namespaceService->getNamespace());
     }
 
-    private function createSuccessStatus(string $fileName): void
+    private function createSuccessStatus(?string $fileName = null): Status
     {
-        $this->status = new Status(self::STATUS_OK, true, 200, [$fileName]);
+        return new Status(self::STATUS_OK, true, 200, $fileName ? [$fileName] : []);
     }
 
-    private function createErrorStatus(\Throwable $e, int $statusCode = 500): void
+    private function createErrorStatus(\Throwable $e, int $statusCode = 500): Status
     {
-        $this->status = new Status(self::STATUS_ERROR, false, $statusCode, [get_class($e), $e->getMessage()]);
+        return new Status(self::STATUS_ERROR, false, $statusCode, [get_class($e), $e->getMessage()]);
     }
 
     public function delete(string $fileName): void
@@ -82,11 +88,11 @@ class StorageFacade
 
             $this->fileSystem->remove($filePath);
 
-            $this->createSuccessStatus($fileName);
+            $this->status = $this->createSuccessStatus($fileName);
         } catch (NotFoundHttpException $e) {
-            $this->createErrorStatus($e, 404);
+            $this->status = $this->createErrorStatus($e, 404);
         } catch (\Throwable $e) {
-            $this->createErrorStatus($e);
+            $this->status = $this->createErrorStatus($e);
         }
     }
 
@@ -119,7 +125,7 @@ class StorageFacade
         $filePath = $this->getStoragePath() . $fileName;
         $exists = $this->fileSystem->exists($filePath);
 
-        $exists
+        $this->status = $exists
             ? $this->createSuccessStatus($fileName)
             : $this->createErrorStatus($this->createNotFoundException($fileName), 404);
 

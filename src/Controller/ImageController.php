@@ -38,6 +38,20 @@ class ImageController extends AbstractController
     }
 
     /**
+     * @Route("/jpg/{fileName}", methods={"GET"})
+     */
+    public function getJpgAction(StorageFacade $storage, Request $request, string $fileName): Response
+    {
+        $image = $storage->getImage($fileName);
+
+        $status = $storage->getStatus();
+
+        return $status->isSuccess()
+            ? new Response($image, 200, ['content-type' => 'image/jpeg'])
+            : $this->json($status->toArray(), $status->getStatusCode());
+    }
+
+    /**
      * @Route("/image/{fileName}", methods={"DELETE"})
      */
     public function deleteImageAction(StorageFacade $storage, Request $request, string $fileName): JsonResponse
