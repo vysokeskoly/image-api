@@ -27,6 +27,12 @@ class Status
         return $this->statusCode;
     }
 
+    /** @param string|array|\JsonSerializable $message */
+    public function addMessage($message): void
+    {
+        $this->messages[] = $message;
+    }
+
     public function toArray(): array
     {
         return [
