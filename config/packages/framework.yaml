@@ -1,6 +1,6 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
-    secret: '%env(APP_SECRET)%'
+    secret: '79d1495d-b595-4b65-ae67-e4513328828d'
     #csrf_protection: true
     #http_method_override: true
 
@@ -15,3 +15,12 @@ framework:
     #fragments: true
     php_errors:
         log: true
+
+    #
+    # Symfony behind Balancer
+    # @see https://symfony.com/doc/current/deployment/proxies.html
+    #
+    # the IP address (or range) of your proxy
+    trusted_proxies: '172.27.129.14,172.27.128.25'
+    # trust *all* "X-Forwarded-*" headers
+    trusted_headers: [ 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix' ]

@@ -1,22 +1,43 @@
 <?php
 
-use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
+use VysokeSkoly\ImageApi\Environment\VSEnv;
+use VysokeSkoly\ImageApi\Environment\VysokeSkoly;
 use VysokeSkoly\ImageApi\Kernel;
+use VysokeSkoly\UtilsBundle\Service\DebugLevel;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+// Prepare request parameters
+$request = Request::createFromGlobals();
 
-if ($_SERVER['APP_DEBUG']) {
-    umask(0000);
-
-    Debug::enable();
+$debugLevel = new DebugLevel();
+$vysokeSkolyApp = new VysokeSkoly(new VSEnv());
+if ($vysokeSkolyApp->isDevEnvironment() || $vysokeSkolyApp->isInternalRequest($request)) {
+    if ($request->query->has('dbg')) {
+        $debugLevel->setLevel($request->query->getInt('dbg'));
+        $vysokeSkolyApp->setDebugCookie($debugLevel);
+    } else {
+        $debugLevel->setLevel($request->cookies->getInt(VysokeSkoly::COOKIE_VYSOKE_SKOLY_DBG));
+    }
 }
 
-$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-$request = Request::createFromGlobals();
+// Determine configuration environment according to LMC environments
+$symfonyEnvironment = $vysokeSkolyApp->getSymfonyEnvironment($debugLevel);
+
+$kernel = new Kernel($symfonyEnvironment, $symfonyEnvironment === VysokeSkoly::SYMFONY_DEV_ENV);
+$kernel->boot();
+
+$container = $kernel->getContainer();
+
+// switch on debug tools in debug mode
+if ($debugLevel->isDebug()) {
+    Debug::enable();
+} elseif ($container->has('profiler')) {
+    $container->get('profiler')->disable();
+}
+
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);

@@ -214,9 +214,6 @@
     "symfony/deprecation-contracts": {
         "version": "v2.4.0"
     },
-    "symfony/dotenv": {
-        "version": "v5.2.4"
-    },
     "symfony/error-handler": {
         "version": "v5.2.8"
     },
@@ -499,6 +496,9 @@
     },
     "vysokeskoly/deb-build": {
         "version": "3.0.1"
+    },
+    "vysokeskoly/utils-bundle": {
+        "version": "6.0.0"
     },
     "webmozart/assert": {
         "version": "1.10.0"
