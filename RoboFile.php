@@ -88,8 +88,8 @@ class RoboFile extends Tasks
             $this->_copy($sourceDir . '/' . $fileToCopy, $appInstallDir . '/' . $fileToCopy);
         }
 
-        // Create empty .env file
-        $this->_touch($appInstallDir . '/' . '.env');
+        // Create prod .env file
+        $this->_copy($sourceDir . '/.env.prod', $appInstallDir . '/.env');
 
         // Generate buildinfo.xml
         $this->taskBuildinfo($appInstallDir . '/var/buildinfo.xml')
