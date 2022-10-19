@@ -1,0 +1,65 @@
+name: Release
+
+on:
+    #push:
+    pull_request:
+    #schedule:
+    #    -   cron:  '0 3 * * *'
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+        name: PHP 8.1 - checks
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+                    coverage: xdebug
+
+            # Prepare application
+            -   name: '[INIT] Check composer.json'
+                run: composer validate --no-check-all --no-check-publish --no-check-lock
+
+            -   name: '[INIT] Install dependencies'
+                run: composer install
+
+            # Check application
+            -   name: '[CHECK] codestyle'
+                run: composer cs
+
+            -   name: '[CHECK] phpstan'
+                run: composer phpstan
+
+            -   name: '[CHECK] Unit tests'
+                run: composer tests-ci
+
+    build:
+        runs-on: ubuntu-latest
+        name: Build deb package
+        needs: checks
+        steps:
+            -   name: '[BUILD] Build deb package'
+                run: bin/build-deb-app
+
+            -   name: '[BUILD] Upload a package'
+                uses: actions/upload-artifact@v3
+                with:
+                    name: deb-package
+                    path: './vysokeskoly-*.deb'
+
+    release:
+        runs-on: ubuntu-latest
+        name: Show deb package
+        needs: build
+        steps:
+            -   name: '[RELEASE] Download a package'
+                uses: actions/download-artifact@v3
+                with:
+                    name: deb-package
+            -   name: '[RELEASE] Display deb package'
+                run: ls -l vysokeskoly-*.deb
