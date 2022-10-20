@@ -3,9 +3,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
     # A secret key that's used to generate certain security-related tokens
-    secret: ThisTokenIsNotSoSecretChangeIt
+    secret: '%env(resolve:APP_SECRET)%'
 
-    api_key: default_api_key
+    api_key: '%env(resolve:API_KEY)%'
 
-    storage_path: /srv/dynamic/storage/
-    default_namespace: my-images
+    storage_path: '%env(resolve:STORAGE_PATH)%'
+    default_namespace: '%env(resolve:DEFAULT_NAMESPACE)%'
