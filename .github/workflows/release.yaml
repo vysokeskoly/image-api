@@ -6,16 +6,10 @@ on:
     # todo - run on tag
 
 # todo
-# - je treba poresit to, aby tam byly vsechny lokalni/skryte soubory, se kterymi se pocita
-#   - daji se pak kdyztak pridat do secrets, buildit apod
-# - release
-#   - pripravit taky asi docker, kde bude deploy console (nebo ji stahovat?), tam se pak pripoji VPN a pusti se release
 # - pustit selenia na devel
 
 # nejak notifikovat slack?
 #        - https://github.com/marketplace/actions/slack-notify
-
-# todo - hodit hosts a mozna i .deployment.yaml jako secrets a jen vzdycky zapsat do souboru
 
 # todo - deployment.yaml muze taky byt soucasti kazde aplikace a byt tam definice jen pro tu danou aplikaci,
 #    jestli to totiz pujde automaticky, dava to smysl a navic se nebude v ramci jednoho buildu nasazovat vic deb balicku
@@ -51,10 +45,29 @@ jobs:
             -   name: '[CHECK] Unit tests'
                 run: composer tests-ci
 
+    download-deploy-console:
+        runs-on: ubuntu-latest
+        name: Download deploy-console
+        steps:
+            # Deploy console
+            -   name: '[DEPLOY-CONSOLE] Download deploy-console'
+                uses: dsaltares/fetch-gh-release-asset@master
+                with:
+                    repo: 'vysokeskoly/deploy-console'
+                    version: 'latest'
+                    file: 'deploy-console.phar'
+                    token: ${{ secrets.DEPLOY_CONSOLE_RELEASE_API_KEY }}
+
+            -   name: '[ARTIFACT] Upload a package'
+                uses: actions/upload-artifact@v3
+                with:
+                    name: deploy-console
+                    path: './deploy-console.phar'
+
     build:
         runs-on: ubuntu-latest
         name: Build deb package
-        needs: checks
+        environment: devel
         steps:
             # Setup
             -   uses: actions/checkout@v2
@@ -78,7 +91,7 @@ jobs:
             -   name: '[BUILD] Build deb package'
                 run: bin/build-deb-app
 
-            -   name: '[BUILD] Upload a package'
+            -   name: '[ARTIFACT] Upload a deploy-console'
                 uses: actions/upload-artifact@v3
                 with:
                     name: deb-package
@@ -87,55 +100,34 @@ jobs:
     release:
         runs-on: ubuntu-latest
         name: Release deb package
-        needs: build
+        needs:
+            - checks
+            - download-deploy-console
+            - build
+        environment: devel
         steps:
             # Setup
             -   uses: actions/checkout@v2
 
-            # Deploy console
-            -   name: '[DEPLOY-CONSOLE] Download deploy-console'
-                uses: dsaltares/fetch-gh-release-asset@master
-                with:
-                    repo: 'vysokeskoly/deploy-console'
-                    version: 'latest'
-                    file: 'deploy-console.phar'
-                    token: ${{ secrets.DEPLOY_CONSOLE_RELEASE_API_KEY }}
-
-            -   name: '[DEPLOY-CONSOLE] Grant execute for deploy-console'
-                run: chmod +x ./deploy-console.phar
-
-            #-   name: '[RELEASE] Download deploy-console configuration'
-            #    uses: dsaltares/fetch-gh-release-asset@master
-            #    with:
-            #        repo: 'vysokeskoly/deploy-console'
-            #        version: 'latest'
-            #        file: 'deployment.yml'
-            #        target: '.deployment.yml'
-            #        token: ${{ secrets.DEPLOY_CONSOLE_RELEASE_API_KEY }}
-            #        # keys are here https://github.com/settings/tokens?type=beta
-
-            #-   name: '[RELEASE] Update deployment config'
-            #    run: |
-            #        echo "Home: $HOME"
-            #        echo "PWD: $PWD"
-            #        sed -i "s/\/Users\/chromecp\/www\/vysokeskoly\/deploy-console/$PWD/" .deployment.yml
-            #        sed -i "s/\/Users\/chromecp\/\.ssh\/id_rsa_mf/$HOME/.ssh/id_rsa" .deployment.yml
-            #        cat .deployment.yml
-
-            # Setup PHP
             -   name: '[PHP] Setup PHP'
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: 8.1
                     extensions: mbstring, intl
 
+            -   name: '[ARTIFACT] Download artifacts'
+                uses: actions/download-artifact@v3
+
+            -   name: '[ARTIFACT] Move to root'
+                run: |
+                    mv deb-package/* ./
+                    mv deploy-console/* ./
+
+            -   name: '[DEPLOY-CONSOLE] Grant execute for deploy-console'
+                run: chmod +x ./deploy-console.phar
+
             -   name: '[DEPLOY-CONSOLE] Display deploy-console info'
                 run: ./deploy-console.phar -V
-
-            -   name: '[DEB] Download a package'
-                uses: actions/download-artifact@v3
-                with:
-                    name: deb-package
 
             -   name: '[DEB] Display deb package'
                 run: ls -l vysokeskoly-*.deb
@@ -160,28 +152,16 @@ jobs:
             -   name: '[VPN] Check Connection'
                 run: echo ${{ steps.connect_vpn.outputs.STATUS }}
 
-            # Set proxy for vs
-            -   name: '[PROXY] Set http'
-                run: echo "{http_proxy}={${{ secrets.PROXY }}}" >> $GITHUB_ENV
-
-            -   name: '[PROXY] Set https'
-                run: echo "{https_proxy}={${{ secrets.PROXY }}}" >> $GITHUB_ENV
-
             # SSH
             -   name: '[SSH] Define IP for private servers'
                 run: |
                     sudo echo "172.27.129.46  apcdn-2.devel" | sudo tee -a /etc/hosts
+                    sudo echo "172.27.128.47  release.vysokeskoly.cz" | sudo tee -a /etc/hosts
 
             -   name: '[SSH] Prepare ssh key'
                 run: |
                     mkdir -p /home/runner/.ssh
-
                     echo '${{ secrets.SSH_KEY_RELEASE }}' > /home/runner/.ssh/id_rsa
-                    sed -n -e 1p /home/runner/.ssh/id_rsa
-                    less /home/runner/.ssh/id_rsa | wc -l
-
-            -   name: '[SSH] Fix ssh rights'
-                run: |
                     chmod 700 /home/runner/.ssh/
                     chmod 600 /home/runner/.ssh/id_rsa
 
