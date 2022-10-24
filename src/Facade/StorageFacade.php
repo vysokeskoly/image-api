@@ -3,7 +3,7 @@
 namespace VysokeSkoly\ImageApi\Facade;
 
 use Assert\Assertion;
-use MF\Collection\Immutable\Seq;
+use MF\Collection\Immutable\Generic\Seq;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
@@ -19,16 +19,13 @@ class StorageFacade
     private const STATUS_OK = 'OK';
     private const STATUS_ERROR = 'ERROR';
 
-    private string $storagePath;
-    private NamespaceService $namespaceService;
-    private Filesystem $fileSystem;
-    private Status $status;
+    private ?Status $status = null;
 
-    public function __construct(string $storagePath, NamespaceService $namespaceService, Filesystem $fileSystem)
-    {
-        $this->storagePath = $storagePath;
-        $this->fileSystem = $fileSystem;
-        $this->namespaceService = $namespaceService;
+    public function __construct(
+        private string $storagePath,
+        private NamespaceService $namespaceService,
+        private Filesystem $fileSystem,
+    ) {
     }
 
     public function saveFiles(FileBag $files): void
@@ -109,12 +106,14 @@ class StorageFacade
     public function listAll(): array
     {
         try {
-            return array_values(
-                array_map(
-                    fn (SplFileInfo $file) => $file->getFilename(),
-                    iterator_to_array((new Finder())->files()->in($this->getStoragePath())->depth('== 0'))
-                )
-            );
+            return Seq::init(
+                (new Finder())
+                    ->files()
+                    ->in($this->getStoragePath())
+                    ->depth('== 0'),
+            )
+                ->map(fn (SplFileInfo $file) => $file->getFilename())
+                ->toArray();
         } catch (DirectoryNotFoundException $e) {
             throw new NotFoundHttpException($e->getMessage());
         }

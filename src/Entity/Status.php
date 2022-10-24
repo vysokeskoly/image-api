@@ -4,17 +4,8 @@ namespace VysokeSkoly\ImageApi\Entity;
 
 class Status
 {
-    private string $status;
-    private bool $isSuccess;
-    private int $statusCode;
-    private array $messages;
-
-    public function __construct(string $status, bool $isSuccess, int $statusCode, array $messages = [])
+    public function __construct(private string $status, private bool $isSuccess, private int $statusCode, private array $messages = [])
     {
-        $this->status = $status;
-        $this->isSuccess = $isSuccess;
-        $this->statusCode = $statusCode;
-        $this->messages = $messages;
     }
 
     public function isSuccess(): bool
@@ -27,8 +18,7 @@ class Status
         return $this->statusCode;
     }
 
-    /** @param string|array|\JsonSerializable $message */
-    public function addMessage($message): void
+    public function addMessage(string|array|\JsonSerializable $message): void
     {
         $this->messages[] = $message;
     }

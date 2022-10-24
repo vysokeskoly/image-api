@@ -39,8 +39,8 @@ class ApiKeyAuthenticator extends AbstractAuthenticator implements Authenticatio
             new UserBadge($apiKey),
             new CustomCredentials(
                 fn ($credentials) => !empty($credentials),
-                $apiKey
-            )
+                $apiKey,
+            ),
         );
     }
 

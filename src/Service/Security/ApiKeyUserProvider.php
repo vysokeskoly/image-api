@@ -10,22 +10,13 @@ use VysokeSkoly\ImageApi\Entity\Security\User;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-    private string $apiKey;
-
-    public function __construct(string $apiKey)
+    public function __construct(private string $apiKey)
     {
-        $this->apiKey = $apiKey;
     }
 
-    /** @deprecated todo remove on symfony 6 */
-    public function loadUserByUsername(string $usernameOrApiKey): ?UserInterface
+    public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        return $this->loadUserByIdentifier($usernameOrApiKey);
-    }
-
-    public function loadUserByIdentifier(string $usernameOrApiKey): ?UserInterface
-    {
-        $username = $this->getUsernameForApiKey($usernameOrApiKey) ?? $usernameOrApiKey;
+        $username = $this->getUsernameForApiKey($identifier) ?? $identifier;
 
         if ($username !== User::USERNAME_API) {
             throw new UserNotFoundException();
