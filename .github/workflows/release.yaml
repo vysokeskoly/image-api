@@ -67,6 +67,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         name: Build deb package
+        environment: devel
         steps:
             # Setup
             -   uses: actions/checkout@v2
@@ -103,6 +104,7 @@ jobs:
             - checks
             - download-deploy-console
             - build
+        environment: devel
         steps:
             # Setup
             -   uses: actions/checkout@v2
