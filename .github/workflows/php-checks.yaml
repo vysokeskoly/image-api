@@ -52,3 +52,34 @@ jobs:
                 with:
                     github-token: ${{ secrets.GITHUB_TOKEN }}
                     parallel-finished: true
+
+    selenium-checks:
+        runs-on: ubuntu-latest
+        name: PHP 8.1 - selenium checks
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            # Prepare application
+            -   name: '[INIT] Check composer.json'
+                working-directory: ./selenium-tests
+                run: composer validate --no-check-all --no-check-publish --no-check-lock
+
+            -   name: '[INIT] Install dependencies'
+                working-directory: ./selenium-tests
+                run: composer install
+
+            # Check selenium
+            -   name: '[CHECK] codestyle'
+                working-directory: ./selenium-tests
+                run: composer analyze
+
+            -   name: '[CHECK] phpstan'
+                working-directory: ./selenium-tests
+                run: composer phpstan

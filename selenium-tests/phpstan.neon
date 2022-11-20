@@ -1,0 +1,7 @@
+parameters:
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Unreachable statement - code above always terminates#'  # this ignores errors for incomplete/skipped tests

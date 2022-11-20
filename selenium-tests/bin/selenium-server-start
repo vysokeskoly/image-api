@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "Start server..."
+composer docker-start
+echo "Waiting..."
+sleep 5
+
+echo "Server is running ..."
