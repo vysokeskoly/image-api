@@ -1,0 +1,69 @@
+{
+    "name": "vysokeskoly/selenium-image-api",
+    "description": "Vysoke skoly - Selenium tests for image-api run by Steward",
+    "minimum-stability": "dev",
+    "license": "proprietary",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "VysokeSkoly\\Selenium\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "lmc/steward": "^3.0",
+        "mf/collections-php": "^7.0",
+        "ramsey/uuid": "^4.3",
+        "thecodingmachine/safe": "^2.4"
+    },
+    "require-dev": {
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.3",
+        "phpstan/phpstan-phpunit": "^1.1"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@installTools"
+        ],
+        "post-update-cmd": [
+            "@updateTools"
+        ],
+        "installTools": [
+            "cd tools/coding-standards && composer install && composer link"
+        ],
+        "updateTools": [
+            "cd tools/coding-standards && composer update && composer link"
+        ],
+        "docker-start--old": [
+            "docker-compose -f ../docker-compose.yml -f etc/selenium-docker.yml up -d chrome",
+            "docker-compose -f ../docker-compose.yml -f etc/selenium-docker.yml scale chrome=2"
+        ],
+        "docker-start": [
+            "docker-compose -f ../docker-compose.yml -f etc/selenium-docker.yml up -d --scale chrome=2 chrome"
+        ],
+        "docker-start-debug": [
+            "docker-compose -f ../docker-compose.yml -f etc/selenium-docker.yml up -d chrome-debug"
+        ],
+        "docker-stop": [
+            "docker-compose -f ../docker-compose.yml -f etc/selenium-docker.yml stop",
+            "docker-compose -f ../docker-compose.yml -f etc/selenium-docker.yml rm -f"
+        ],
+        "all": [
+            "@analyze",
+            "@phpstan"
+        ],
+        "phpstan": "vendor/bin/phpstan analyze -l 8 -c phpstan.neon tests",
+        "fix": [
+            "vendor/bin/ecs check --ansi --clear-cache --fix -- tests"
+        ],
+        "analyze": [
+            "vendor/bin/ecs check --ansi -- tests"
+        ]
+    }
+}
