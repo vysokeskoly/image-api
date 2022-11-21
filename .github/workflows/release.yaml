@@ -45,6 +45,37 @@ jobs:
             -   name: '[CHECK] Unit tests'
                 run: composer tests-ci
 
+    selenium-checks:
+        runs-on: ubuntu-latest
+        name: PHP 8.1 - selenium checks
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            # Prepare application
+            -   name: '[INIT] Check composer.json'
+                working-directory: ./selenium-tests
+                run: composer validate --no-check-all --no-check-publish --no-check-lock
+
+            -   name: '[INIT] Install dependencies'
+                working-directory: ./selenium-tests
+                run: composer install
+
+            # Check selenium
+            -   name: '[CHECK] codestyle'
+                working-directory: ./selenium-tests
+                run: composer analyze
+
+            -   name: '[CHECK] phpstan'
+                working-directory: ./selenium-tests
+                run: composer phpstan
+
     download-deploy-console:
         runs-on: ubuntu-latest
         name: Download deploy-console
@@ -168,3 +199,67 @@ jobs:
             # Release to devel
             -   name: '[RELEASE] Release deb to devel'
                 run: ./deploy-console.phar d:release devel "Github release - ${{ github.event.pull_request.title }}" -P
+
+    selenium-tests:
+        runs-on: ubuntu-latest
+        name: Selenium tests
+        needs:
+            - selenium-checks
+            - release
+        environment: devel
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup PHP'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            -   name: '[INIT] Install dependencies'
+                working-directory: ./selenium-tests
+                run: composer install
+
+            # Connect to VPN
+            -   name: '[VPN] Install Open VPN'
+                run: sudo apt-get install openvpn
+
+            -   name: '[VPN] Connect'
+                uses: golfzaptw/action-connect-ovpn@master
+                id: connect_vpn
+                with:
+                    PING_URL: '172.27.128.47'
+                    FILE_OVPN: '.github/vpn/config.ovpn'
+                    SECRET: ${{ secrets.VPN_USERNAME_PASSWORD }}
+                    TLS_KEY: ''
+                env:
+                    CA_CRT: ${{ secrets.VPN_CA }}
+                    USER_CRT: ${{ secrets.VPN_CRT }}
+                    USER_KEY: ${{ secrets.VPN_KEY }}
+
+            -   name: '[VPN] Check Connection'
+                run: echo ${{ steps.connect_vpn.outputs.STATUS }}
+
+            # Run devel selenium tests
+            -   name: '[SELENIUM] Start server'
+                working-directory: ./selenium-tests
+                run: bin/selenium-server-start
+
+            -   name: '[SELENIUM] Run all devel tests'
+                working-directory: ./selenium-tests
+                env:
+                    API_KEY: ${{ secrets.IMAGE_API_APIKEY }}
+                run: ./vendor/bin/steward run -vv dev chrome
+
+            -   name: '[SELENIUM] Stop server'
+                if: success() || failure()
+                working-directory: ./selenium-tests
+                run: bin/selenium-server-start
+
+            -   name: '[ARTIFACT] Upload a result'
+                if: success() || failure()
+                uses: actions/upload-artifact@v3
+                with:
+                    name: selenium-devel-result.xml
+                    path: './selenium-tests/logs/results.xml'

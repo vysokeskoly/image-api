@@ -26,11 +26,11 @@ class AuthTest extends AbstractVysokeSkolyTestCase
         $this->imageApi->goToAuth($apiKey);
         $content = $this->imageApi->getJsonContent();
 
-        $this->assertSame(
-            [
-                'auth' => 'OK',
-            ],
-            $content,
-        );
+        $this->assertArrayHasKey('auth', $content);
+        $this->assertSame('OK', $content['auth']);
+
+        $this->assertArrayHasKey('host', $content);
+        $this->assertStringStartsWith('apcdn-', $content['host']);
+        $this->assertStringEndsWith(sprintf('.%s', $this->getEnvironment()), $content['host']);
     }
 }

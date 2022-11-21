@@ -3,6 +3,7 @@
 namespace VysokeSkoly\Selenium;
 
 use Assert\Assertion;
+use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Lmc\Steward\Test\AbstractTestCase;
 use VysokeSkoly\Selenium\Component\ImageApiComponent;
 
@@ -15,6 +16,7 @@ abstract class AbstractVysokeSkolyTestCase extends AbstractTestCase
     public const LOCAL_URL = '127.0.0.1:8080/';
 
     public string $baseUrl;
+    protected string $environment;
     protected ImageApiComponent $imageApi;
 
     public function __construct($name = null, array $data = [], $dataName = '')
@@ -35,11 +37,17 @@ abstract class AbstractVysokeSkolyTestCase extends AbstractTestCase
     {
         $capabilities = $this->wd->getCapabilities();
         Assertion::notNull($capabilities);
-        $proxy = $capabilities->getCapability('proxy');
+
+        $proxy = $capabilities->getCapability(WebDriverCapabilityType::PROXY);
 
         if (empty($proxy)) {
             $this->debug('Set baseUrl to local url for no-proxy.');
             $this->baseUrl = 'http://' . self::LOCAL_URL;
+            $this->environment = 'local';
+        } else {
+            $this->environment = str_contains($proxy['httpProxy'], 'prod')
+                ? 'prod'
+                : 'devel';
         }
     }
 
@@ -66,5 +74,27 @@ abstract class AbstractVysokeSkolyTestCase extends AbstractTestCase
         foreach ($expectedParts as $expectedPart) {
             $this->assertStringContainsString($expectedPart, $actual);
         }
+    }
+
+    public function isDevel(): bool
+    {
+        return $this->environment === 'devel';
+    }
+
+    public function isProd(): bool
+    {
+        return $this->environment === 'prod';
+    }
+
+    public function isLocal(): bool
+    {
+        return $this->environment === 'local';
+    }
+
+    public function getEnvironment(): string
+    {
+        return $this->isProd()
+            ? 'prod'
+            : 'devel';
     }
 }
