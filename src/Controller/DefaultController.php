@@ -25,6 +25,7 @@ class DefaultController extends AbstractController
     {
         return $this->json([
             'auth' => 'OK',
+            'host' => \Safe\gethostname(),
         ]);
     }
 }

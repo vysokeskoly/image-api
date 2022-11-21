@@ -37,6 +37,7 @@
         "symfony/web-link": "^6.1",
         "symfony/web-profiler-bundle": "^6.1",
         "symfony/yaml": "^6.1",
+        "thecodingmachine/safe": "^2.4",
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^3.0",
         "vysokeskoly/deb-build": "^7.0"
