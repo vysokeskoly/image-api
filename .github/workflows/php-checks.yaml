@@ -3,8 +3,8 @@ name: PHP - Checks
 on:
     #push:
     pull_request:
-    #schedule:
-    #    -   cron:  '0 3 * * *'
+    schedule:
+        -   cron:  '0 3 * * *'
 
 jobs:
     checks:

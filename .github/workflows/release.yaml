@@ -1,18 +1,12 @@
 name: Release
 
 on:
-    #push:
-    pull_request:
-    # todo - run on tag
-
-# todo
-# - pustit selenia na devel
-
-# nejak notifikovat slack?
-#        - https://github.com/marketplace/actions/slack-notify
-
-# todo - deployment.yaml muze taky byt soucasti kazde aplikace a byt tam definice jen pro tu danou aplikaci,
-#    jestli to totiz pujde automaticky, dava to smysl a navic se nebude v ramci jednoho buildu nasazovat vic deb balicku
+    push:
+        branches:
+            - main
+            - 'integration/**'
+        tags:
+            - '*'
 
 jobs:
     checks:
@@ -209,7 +203,7 @@ jobs:
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: ':rocket: Release successful :white_check_mark:'
-                    SLACK_TITLE: Release
+                    SLACK_TITLE: Image Api - Release to devel
                     SLACK_USERNAME: Github Action
                     SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
 
@@ -221,7 +215,7 @@ jobs:
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: ':rocket: Release failed :boom:'
-                    SLACK_TITLE: Release
+                    SLACK_TITLE: Image Api - Release to devel
                     SLACK_USERNAME: Github Action
                     SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
 
@@ -298,7 +292,7 @@ jobs:
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: 'Selenium tests are successful :white_check_mark:'
-                    SLACK_TITLE: Selenium tests
+                    SLACK_TITLE: Image Api - Selenium tests on devel
                     SLACK_USERNAME: Github Action
                     SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
 
@@ -310,6 +304,6 @@ jobs:
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: 'Selenium tests have failed :boom:'
-                    SLACK_TITLE: Selenium tests
+                    SLACK_TITLE: Image Api - Selenium tests on devel
                     SLACK_USERNAME: Github Action
                     SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
