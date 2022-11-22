@@ -115,6 +115,7 @@ jobs:
             # Build
             -   name: '[BUILD] Build deb package'
                 run: bin/build-deb-app
+                shell: bash
                 env:
                     BUILD_NUMBER: ${{ github.job }}
 
