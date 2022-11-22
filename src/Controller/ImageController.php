@@ -11,9 +11,7 @@ use VysokeSkoly\ImageApi\Facade\StorageFacade;
 
 class ImageController extends AbstractController
 {
-    /**
-     * @Route("/image/", methods={"POST"})
-     */
+    #[Route(path: '/image/', methods: ['POST'])]
     public function postImageAction(StorageFacade $storage, Request $request): JsonResponse
     {
         $storage->saveFiles($request->files);
@@ -23,9 +21,7 @@ class ImageController extends AbstractController
         return $this->json($status->toArray(), $status->getStatusCode());
     }
 
-    /**
-     * @Route("/image/{fileName}", methods={"GET"})
-     */
+    #[Route(path: '/image/{fileName}', methods: ['GET'])]
     public function getImageAction(StorageFacade $storage, Request $request, string $fileName): Response
     {
         $image = $storage->getImage($fileName);
@@ -37,9 +33,7 @@ class ImageController extends AbstractController
             : $this->json($status->toArray(), $status->getStatusCode());
     }
 
-    /**
-     * @Route("/jpg/{fileName}", methods={"GET"})
-     */
+    #[Route(path: '/jpg/{fileName}', methods: ['GET'])]
     public function getJpgAction(StorageFacade $storage, Request $request, string $fileName): Response
     {
         $image = $storage->getImage($fileName);
@@ -47,13 +41,11 @@ class ImageController extends AbstractController
         $status = $storage->getStatus();
 
         return $status->isSuccess()
-            ? new Response($image, 200, ['content-type' => 'image/jpeg'])
+            ? new Response($image, Response::HTTP_OK, ['content-type' => 'image/jpeg'])
             : $this->json($status->toArray(), $status->getStatusCode());
     }
 
-    /**
-     * @Route("/image/{fileName}", methods={"DELETE"})
-     */
+    #[Route(path: '/image/{fileName}', methods: ['DELETE'])]
     public function deleteImageAction(StorageFacade $storage, Request $request, string $fileName): JsonResponse
     {
         $storage->delete($fileName);
@@ -63,9 +55,7 @@ class ImageController extends AbstractController
         return $this->json($status->toArray(), $status->getStatusCode());
     }
 
-    /**
-     * @Route("/list/", methods={"GET"})
-     */
+    #[Route(path: '/list/', methods: ['GET'])]
     public function getListAction(StorageFacade $storage): JsonResponse
     {
         return $this->json($storage->listAll());

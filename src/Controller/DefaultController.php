@@ -8,9 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    /**
-     * @Route("/", name="homepage")
-     */
+    #[Route(path: '/', name: 'homepage')]
     public function indexAction(): JsonResponse
     {
         return $this->json([
@@ -18,9 +16,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/auth", name="api.auth")
-     */
+    #[Route(path: '/auth', name: 'api.auth')]
     public function authAction(): JsonResponse
     {
         return $this->json([

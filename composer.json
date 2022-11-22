@@ -107,6 +107,7 @@
             "@test"
         ],
         "analyze": [
+            "@rector",
             "@cs",
             "@lint"
         ],
@@ -119,11 +120,13 @@
         ],
         "fix": [
             "@composer normalize",
+            "bin/rector process --clear-cache -- src",
             "bin/ecs check --ansi --clear-cache --fix -- src/ tests/"
         ],
         "installTools": [
             "cd tools/coding-standards && composer install && composer link",
-            "cd tools/pre-build && composer install && composer link"
+            "cd tools/pre-build && composer install && composer link",
+            "cd tools/rector && composer install && composer link"
         ],
         "lint": [
             "@composer validate",
@@ -133,11 +136,15 @@
             "bin/parallel-lint -j 10 -e php ./src ./tests ecs.php"
         ],
         "phpstan": "bin/phpstan analyze -l 8 -c phpstan.neon src tests",
+        "rector": [
+            "bin/rector process --dry-run -- src"
+        ],
         "test": "bin/phpunit -c phpunit.xml.dist",
         "tests-ci": "mkdir -p code-coverage && php -dxdebug.coverage_enable=1 bin/phpunit -c phpunit.xml.dist",
         "updateTools": [
             "cd tools/coding-standards && composer update && composer link",
-            "cd tools/pre-build && composer update && composer link"
+            "cd tools/pre-build && composer update && composer link",
+            "cd tools/rector && composer update && composer link"
         ]
     }
 }
