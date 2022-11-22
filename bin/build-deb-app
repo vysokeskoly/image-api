@@ -8,12 +8,7 @@ if test -f "/vysokeskoly-in-docker"; then
 
 
     echo "Add pre-build vars ..."
-    #source <(php bin/pre-build-console pre-build:parse-variables)
-    export GIT_COMMIT="commit"
-    export GIT_URL="git://repo"
-    export GIT_BRANCH="branch"
-    export GIT_TAG="0.0.0"
-    # todo - fix pre-build
+    source <(php bin/pre-build-console pre-build:parse-variables)
 
     echo "Build deb ..."
     export BUILD_NUMBER=666
