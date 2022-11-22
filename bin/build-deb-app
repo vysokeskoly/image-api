@@ -6,12 +6,13 @@ if test -f "/vysokeskoly-in-docker"; then
     echo "Build current app ..."
     composer install --optimize-autoloader --no-dev --no-interaction
 
-
     echo "Add pre-build vars ..."
     source <(php bin/pre-build-console pre-build:parse-variables)
 
     echo "Build deb ..."
-    export BUILD_NUMBER=666
+    if [ -z "${BUILD_NUMBER}" ]; then
+      export BUILD_NUMBER=666
+    fi
     bin/robo build:deb
 
     echo "Done"
