@@ -1,0 +1,308 @@
+name: Release to devel
+
+on:
+    push:
+        branches:
+            - 'integration/**'
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+        name: PHP checks
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            # Prepare application
+            -   name: '[INIT] Check composer.json'
+                run: composer validate --no-check-all --no-check-publish --no-check-lock
+
+            -   name: '[INIT] Install dependencies'
+                run: composer install
+
+            # Check application
+            -   name: '[CHECK] analyze'
+                run: composer analyze
+
+            -   name: '[CHECK] phpstan'
+                run: composer phpstan
+
+            -   name: '[CHECK] Unit tests'
+                run: composer tests-ci
+
+    selenium-checks:
+        runs-on: ubuntu-latest
+        name: PHP 8.1 - selenium checks
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            # Prepare application
+            -   name: '[INIT] Check composer.json'
+                working-directory: ./selenium-tests
+                run: composer validate --no-check-all --no-check-publish --no-check-lock
+
+            -   name: '[INIT] Install dependencies'
+                working-directory: ./selenium-tests
+                run: composer install
+
+            # Check selenium
+            -   name: '[CHECK] codestyle'
+                working-directory: ./selenium-tests
+                run: composer analyze
+
+            -   name: '[CHECK] phpstan'
+                working-directory: ./selenium-tests
+                run: composer phpstan
+
+    download-deploy-console:
+        runs-on: ubuntu-latest
+        name: Download deploy-console
+        steps:
+            # Deploy console
+            -   name: '[DEPLOY-CONSOLE] Download deploy-console'
+                uses: dsaltares/fetch-gh-release-asset@master
+                with:
+                    repo: 'vysokeskoly/deploy-console'
+                    version: 'latest'
+                    file: 'deploy-console.phar'
+                    token: ${{ secrets.DEPLOY_CONSOLE_RELEASE_API_KEY }}
+
+            -   name: '[ARTIFACT] Upload a package'
+                uses: actions/upload-artifact@v3
+                with:
+                    name: deploy-console
+                    path: './deploy-console.phar'
+
+    build:
+        runs-on: ubuntu-latest
+        name: Build deb package
+        environment: devel
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            # Prepare .env file
+            -   name: '[ENV] Prepare configuration file'
+                uses: SpicyPizza/create-envfile@v1.3
+                with:
+                    envkey_APP_ENV: prod
+                    envkey_APP_SECRET: ${{ secrets.APP_SECRET }}
+                    envkey_API_KEY: ${{ secrets.IMAGE_API_APIKEY }}
+                    envkey_DEFAULT_NAMESPACE: ${{ secrets.DEFAULT_NAMESPACE }}
+                    envkey_STORAGE_PATH: ${{ secrets.STORAGE_PATH }}
+                    file_name: .env.prod
+                    fail_on_empty: false
+
+            -   name: '[ENV] Show configuration'
+                run: cat .env.prod
+
+            # Build
+            -   name: '[BUILD] Build deb package'
+                run: bin/build-deb-app
+                env:
+                    BUILD_NUMBER: ${{ github.job }}
+
+            -   name: '[ARTIFACT] Upload a deploy-console'
+                uses: actions/upload-artifact@v3
+                with:
+                    name: deb-package
+                    path: './vysokeskoly-*.deb'
+
+    release:
+        runs-on: ubuntu-latest
+        name: Release deb package
+        needs:
+            - checks
+            - download-deploy-console
+            - build
+        environment: devel
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup PHP'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            -   name: '[ARTIFACT] Download artifacts'
+                uses: actions/download-artifact@v3
+
+            -   name: '[ARTIFACT] Move to root'
+                run: |
+                    mv deb-package/* ./
+                    mv deploy-console/* ./
+
+            -   name: '[DEPLOY-CONSOLE] Grant execute for deploy-console'
+                run: chmod +x ./deploy-console.phar
+
+            -   name: '[DEPLOY-CONSOLE] Display deploy-console info'
+                run: ./deploy-console.phar -V
+
+            -   name: '[DEB] Display deb package'
+                run: ls -l vysokeskoly-*.deb
+
+            # Connect to VPN
+            -   name: '[VPN] Install Open VPN'
+                run: sudo apt-get install openvpn
+
+            -   name: '[VPN] Connect'
+                uses: golfzaptw/action-connect-ovpn@master
+                id: connect_vpn
+                with:
+                    PING_URL: '172.27.128.47'
+                    FILE_OVPN: '.github/vpn/config.ovpn'
+                    SECRET: ${{ secrets.VPN_USERNAME_PASSWORD }}
+                    TLS_KEY: ''
+                env:
+                    CA_CRT: ${{ secrets.VPN_CA }}
+                    USER_CRT: ${{ secrets.VPN_CRT }}
+                    USER_KEY: ${{ secrets.VPN_KEY }}
+
+            -   name: '[VPN] Check Connection'
+                run: echo ${{ steps.connect_vpn.outputs.STATUS }}
+
+            # SSH
+            -   name: '[SSH] Define IP for private servers'
+                run: |
+                    sudo echo "172.27.129.46  apcdn-2.devel" | sudo tee -a /etc/hosts
+                    sudo echo "172.27.128.47  release.vysokeskoly.cz" | sudo tee -a /etc/hosts
+
+            -   name: '[SSH] Prepare ssh key'
+                run: |
+                    mkdir -p /home/runner/.ssh
+                    echo '${{ secrets.SSH_KEY_RELEASE }}' > /home/runner/.ssh/id_rsa
+                    chmod 700 /home/runner/.ssh/
+                    chmod 600 /home/runner/.ssh/id_rsa
+
+            # Release to devel
+            -   name: '[RELEASE] Release deb to devel'
+                run: ./deploy-console.phar d:release devel "Github release - ${{ github.event.pull_request.title }}" -P
+
+            # Notify
+            -   name: Slack Notification - success
+                if: success()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: ':rocket: Release successful :white_check_mark:'
+                    SLACK_TITLE: Image Api - Release to devel
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+
+            -   name: Slack Notification - fail
+                if: failure()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: ':rocket: Release failed :boom:'
+                    SLACK_TITLE: Image Api - Release to devel
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+
+    selenium-tests:
+        runs-on: ubuntu-latest
+        name: Selenium tests
+        needs:
+            - selenium-checks
+            - release
+        environment: devel
+        steps:
+            # Setup
+            -   uses: actions/checkout@v2
+
+            -   name: '[PHP] Setup PHP'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            -   name: '[INIT] Install dependencies'
+                working-directory: ./selenium-tests
+                run: composer install
+
+            # Connect to VPN
+            -   name: '[VPN] Install Open VPN'
+                run: sudo apt-get install openvpn
+
+            -   name: '[VPN] Connect'
+                uses: golfzaptw/action-connect-ovpn@master
+                id: connect_vpn
+                with:
+                    PING_URL: '172.27.128.47'
+                    FILE_OVPN: '.github/vpn/config.ovpn'
+                    SECRET: ${{ secrets.VPN_USERNAME_PASSWORD }}
+                    TLS_KEY: ''
+                env:
+                    CA_CRT: ${{ secrets.VPN_CA }}
+                    USER_CRT: ${{ secrets.VPN_CRT }}
+                    USER_KEY: ${{ secrets.VPN_KEY }}
+
+            -   name: '[VPN] Check Connection'
+                run: echo ${{ steps.connect_vpn.outputs.STATUS }}
+
+            # Run devel selenium tests
+            -   name: '[SELENIUM] Start server'
+                working-directory: ./selenium-tests
+                run: bin/selenium-server-start
+
+            -   name: '[SELENIUM] Run all devel tests'
+                working-directory: ./selenium-tests
+                env:
+                    API_KEY: ${{ secrets.IMAGE_API_APIKEY }}
+                run: ./vendor/bin/steward run -vv dev chrome
+
+            -   name: '[SELENIUM] Stop server'
+                if: success() || failure()
+                working-directory: ./selenium-tests
+                run: bin/selenium-server-start
+
+            -   name: '[ARTIFACT] Upload a result'
+                if: success() || failure()
+                uses: actions/upload-artifact@v3
+                with:
+                    name: selenium-results.xml
+                    path: './selenium-tests/logs/results.xml'
+
+            # Notify
+            -   name: Slack Notification - success
+                if: success()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: 'Selenium tests are successful :white_check_mark:'
+                    SLACK_TITLE: Image Api - Selenium tests on devel
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+
+            -   name: Slack Notification - fail
+                if: failure()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: 'Selenium tests have failed :boom:'
+                    SLACK_TITLE: Image Api - Selenium tests on devel
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}

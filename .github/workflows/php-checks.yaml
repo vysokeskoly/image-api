@@ -29,8 +29,8 @@ jobs:
                 run: composer install
 
             # Check application
-            -   name: '[CHECK] codestyle'
-                run: composer cs
+            -   name: '[CHECK] analyze'
+                run: composer analyze
 
             -   name: '[CHECK] phpstan'
                 run: composer phpstan
