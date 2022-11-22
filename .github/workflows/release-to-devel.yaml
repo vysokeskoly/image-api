@@ -112,6 +112,8 @@ jobs:
             # Build
             -   name: '[BUILD] Build deb package'
                 run: bin/build-deb-app
+                env:
+                    BUILD_NUMBER: ${{ github.run_id }}
 
             -   name: '[ARTIFACT] Upload a deploy-console'
                 uses: actions/upload-artifact@v3

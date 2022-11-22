@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "757bc03bccff39bb80329c25fe0b86d0",
+    "content-hash": "ebf4955af4ec36772977c90c040158ab",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -130,16 +130,16 @@
         },
         {
             "name": "mf/pre-build",
-            "version": "5.0.0",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MortalFlesh/pre-build.git",
-                "reference": "46f84ea7fdc3d0a760a4ecfaf1c6f1172a3ae77b"
+                "reference": "801dcd37094941e17142a47caf2803d77caddf01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MortalFlesh/pre-build/zipball/46f84ea7fdc3d0a760a4ecfaf1c6f1172a3ae77b",
-                "reference": "46f84ea7fdc3d0a760a4ecfaf1c6f1172a3ae77b",
+                "url": "https://api.github.com/repos/MortalFlesh/pre-build/zipball/801dcd37094941e17142a47caf2803d77caddf01",
+                "reference": "801dcd37094941e17142a47caf2803d77caddf01",
                 "shasum": ""
             },
             "require": {
@@ -190,9 +190,9 @@
             "description": "Pre build commands for exporting variables for building a package",
             "support": {
                 "issues": "https://github.com/MortalFlesh/pre-build/issues",
-                "source": "https://github.com/MortalFlesh/pre-build/tree/5.0.0"
+                "source": "https://github.com/MortalFlesh/pre-build/tree/5.1.0"
             },
-            "time": "2022-08-03T09:00:47+00:00"
+            "time": "2022-11-22T22:29:21+00:00"
         },
         {
             "name": "psr/container",
