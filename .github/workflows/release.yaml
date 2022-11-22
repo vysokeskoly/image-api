@@ -200,6 +200,31 @@ jobs:
             -   name: '[RELEASE] Release deb to devel'
                 run: ./deploy-console.phar d:release devel "Github release - ${{ github.event.pull_request.title }}" -P
 
+            # Notify
+            -   name: Slack Notification - success
+                if: success()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: ':rocket: Release successful :white_check_mark:'
+                    SLACK_TITLE: Release
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+
+            -   name: Slack Notification - fail
+                if: failure()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: ':rocket: Release failed :boom:'
+                    SLACK_TITLE: Release
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+
     selenium-tests:
         runs-on: ubuntu-latest
         name: Selenium tests
@@ -263,3 +288,28 @@ jobs:
                 with:
                     name: selenium-devel-result.xml
                     path: './selenium-tests/logs/results.xml'
+
+            # Notify
+            -   name: Slack Notification - success
+                if: success()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: 'Selenium tests are successful :white_check_mark:'
+                    SLACK_TITLE: Selenium tests
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+
+            -   name: Slack Notification - fail
+                if: failure()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: release
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: 'Selenium tests have failed :boom:'
+                    SLACK_TITLE: Selenium tests
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
