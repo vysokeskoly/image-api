@@ -2,8 +2,9 @@ name: PHP - Checks
 
 on:
     push:
-        - master
-        - main
+        branches:
+            - master
+            - main
     pull_request:
     schedule:
         -   cron:  '0 3 * * *'
