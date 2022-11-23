@@ -1,0 +1,51 @@
+version: '2.3'
+
+services:
+    hub:
+        environment:
+            - JAVA_OPTS=-Xmx512m
+            - SE_OPTS=-browserTimeout 180
+        image: selenium/hub:3
+        ports:
+            - "${SELENIUM_HUB_PORT:-4444}:4444"
+        extra_hosts:
+            - "proxy-1.devel:172.27.129.14"
+            - "proxy-1.prod:172.27.128.25"
+
+    chrome:
+        environment:
+            - JAVA_OPTS=-Xmx512m
+            - HUB_PORT_4444_TCP_ADDR=hub
+            - HUB_PORT_4444_TCP_PORT=4444
+            - SCREEN_WIDTH=1280
+            - SCREEN_HEIGHT=1024
+        image: selenium/node-chrome:3
+        volumes:
+            - /dev/shm:/dev/shm
+            - ${PWD}:${PWD}
+        depends_on:
+            - hub
+            #- vysokeskoly-image-api # for local test only
+        extra_hosts:
+            - "proxy-1.devel:172.27.129.14"
+            - "proxy-1.prod:172.27.128.25"
+
+    chrome-debug:
+        environment:
+            - JAVA_OPTS=-Xmx512m
+            - HUB_PORT_4444_TCP_ADDR=hub
+            - HUB_PORT_4444_TCP_PORT=4444
+            - SCREEN_WIDTH=1280
+            - SCREEN_HEIGHT=1024
+        image: selenium/node-chrome-debug:3
+        ports:
+            - 5900:5900
+        volumes:
+            - /dev/shm:/dev/shm
+            - ${PWD}:${PWD}
+        depends_on:
+            - hub
+            #- vysokeskoly-image-api # for local test only
+        extra_hosts:
+            - "proxy-1.devel:172.27.129.14"
+            - "proxy-1.prod:172.27.128.25"

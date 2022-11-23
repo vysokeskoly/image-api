@@ -1,0 +1,21 @@
+version: '2.3'
+services:
+    vysokeskoly-image-api:
+        image: vysokeskoly/vysokeskoly-php:8.1
+        volumes:
+            - ./etc/vhosts/vhosts.image-api.conf:/etc/apache2/sites-available/000-default.conf
+            - .:/srv/www/image-api
+            - /srv/www/image-api/var/cache
+            - /srv/www/image-api/var/logs
+        working_dir: /srv/www/image-api
+        entrypoint: # https://github.com/docker-library/php/issues/529#issuecomment-348379420
+            - bash
+            - -c
+            - |
+                set -e
+                sh /root/init-container.sh
+
+                echo 'initialization done, starting apache on http://127.0.0.1:8080/ ...'
+                exec apache2-foreground
+        ports:
+            - "127.0.0.1:8080:80"

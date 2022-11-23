@@ -3,6 +3,7 @@
 require __DIR__ . '/vendor/vysokeskoly/deb-build/src/autoload.php';
 
 use Robo\Common\ResourceExistenceChecker;
+use Robo\Symfony\ConsoleIO;
 use Robo\Tasks;
 use VysokeSkoly\Build\ComposerParserTrait;
 use VysokeSkoly\Build\FpmCheckerTrait;
@@ -23,6 +24,7 @@ class RoboFile extends Tasks
 
     const BIN_CONSOLE = 'php ./bin/console';
     const BIN_CONSOLE_HIGH_MEMORY = 'php -d memory_limit=256M ./bin/console';
+    const ENV_PROD = '.env.prod';
 
     /**
      * Build deb package. It is expected the Composer packages were installed using `--no-dev`.
@@ -30,13 +32,19 @@ class RoboFile extends Tasks
      * @param array $options
      * @return int
      */
-    public function buildDeb($options = ['dev-build' => false])
+    public function buildDeb(ConsoleIO $io, $options = ['dev-build' => false])
     {
         $this->stopOnFail();
 
         $isDevBuild = (bool) $options['dev-build'];
 
         if (!$this->checkFpmIsInstalled()) {
+            return 1;
+        }
+
+        if (!$this->isFile(self::ENV_PROD)) {
+            $io->error(sprintf('File %s does not exists.', self::ENV_PROD));
+
             return 1;
         }
 

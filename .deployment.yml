@@ -1,0 +1,26 @@
+deployment:
+    root: /home/runner/work/image-api/image-api
+
+    environment:
+        options: [ 'devel', 'prod' ]
+        pattern: '{SERVER}-{NODE}.{ENV}'
+
+    authorization:
+        user: deployment
+        key: /home/runner/.ssh/id_rsa
+
+    servers:
+        apcdn:
+            devel:
+                node: [ 2 ]
+            prod:
+                node: [ 2 ]
+
+    packages:
+        # image-api
+        vysokeskoly-image-api:
+            servers: [ 'apcdn' ]
+            build:
+                type: deb
+                pattern: vysokeskoly-image-api_.*?\.deb
+                archive: release

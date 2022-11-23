@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "Waiting..."
+sleep 5
+
+echo "Stop server..."
+composer docker-stop
+
+echo "Done"
