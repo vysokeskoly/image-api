@@ -199,7 +199,7 @@ jobs:
                 if: success()
                 uses: rtCamp/action-slack-notify@v2
                 env:
-                    SLACK_CHANNEL: release
+                    SLACK_CHANNEL: release-devel
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: ':rocket: Release successful :white_check_mark:'
@@ -211,7 +211,7 @@ jobs:
                 if: failure()
                 uses: rtCamp/action-slack-notify@v2
                 env:
-                    SLACK_CHANNEL: release
+                    SLACK_CHANNEL: release-devel
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: ':rocket: Release failed :boom:'
@@ -288,7 +288,7 @@ jobs:
                 if: success()
                 uses: rtCamp/action-slack-notify@v2
                 env:
-                    SLACK_CHANNEL: release
+                    SLACK_CHANNEL: release-devel
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: 'Selenium tests are successful :white_check_mark:'
@@ -300,7 +300,7 @@ jobs:
                 if: failure()
                 uses: rtCamp/action-slack-notify@v2
                 env:
-                    SLACK_CHANNEL: release
+                    SLACK_CHANNEL: release-devel
                     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
                     #SLACK_ICON: https://github.com/rtCamp.png?size=48
                     SLACK_MESSAGE: 'Selenium tests have failed :boom:'
