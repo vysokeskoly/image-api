@@ -31,6 +31,13 @@ class AuthTest extends AbstractVysokeSkolyTestCase
 
         $this->assertArrayHasKey('host', $content);
         $this->assertStringStartsWith('apcdn-', $content['host']);
-        $this->assertStringEndsWith(sprintf('.%s', $this->getEnvironment()), $content['host']);
+
+        $expectedSuffix = match ($this->getEnvironment()) {
+            'devel' => '.devel',
+            'prod' => '.prod.vysokeskoly.cz',
+            default => '',
+        };
+
+        $this->assertStringEndsWith($expectedSuffix, $content['host']);
     }
 }
