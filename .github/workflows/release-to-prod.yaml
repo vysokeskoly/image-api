@@ -195,7 +195,7 @@ jobs:
 
             # Release to prod
             -   name: '[RELEASE] Release deb to prod'
-                run: ./deploy-console.phar d:release prod "Github release - ${{ github.event_name }}" -P
+                run: ./deploy-console.phar d:release prod "Github release - ${{ github.ref_name }}" -P
 
             # Notify
             -   name: Slack Notification - success
