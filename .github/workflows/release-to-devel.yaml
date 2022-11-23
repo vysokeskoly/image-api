@@ -192,7 +192,8 @@ jobs:
 
             # Release to devel
             -   name: '[RELEASE] Release deb to devel'
-                run: ./deploy-console.phar d:release devel "Github release - ${{ github.event.pull_request.title }}" -P
+                run: |
+                    ./deploy-console.phar d:release devel "Github release - ${{ github.ref_type }}: ${{ github.ref_name }}"
 
             # Notify
             -   name: Slack Notification - success
