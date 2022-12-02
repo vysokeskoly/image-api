@@ -97,7 +97,7 @@ class RoboFile extends Tasks
         }
 
         // Create prod .env file
-        $this->_copy($sourceDir . '/.env.prod', $appInstallDir . '/.env');
+        $this->_copy($sourceDir . self::ENV_PROD, $appInstallDir . '/.env');
 
         // Generate buildinfo.xml
         $this->taskBuildinfo($appInstallDir . '/var/buildinfo.xml')
