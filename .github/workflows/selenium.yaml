@@ -1,0 +1,89 @@
+name: Selenium
+
+on:
+    schedule:
+        -   cron: '0 3 * * *'
+
+jobs:
+    selenium-tests:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                env: [ 'devel' ]
+                group: [ '' ]
+                include:
+                    - { env: 'prod', group: '--group=prod-safe' }
+
+        name: Selenium tests - ${{ matrix.env }}
+        concurrency:
+            group: ${{ format('{0}-{1}', github.workflow, github.job) }}
+        environment: ${{ matrix.env }}
+        steps:
+            # Setup
+            -   uses: actions/checkout@v3
+
+            -   name: '[PHP] Setup PHP'
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.1
+                    extensions: mbstring, intl
+
+            -   name: '[INIT] Install dependencies'
+                working-directory: ./selenium-tests
+                run: composer install
+
+            # Connect to VPN
+            -   name: '[VPN] Install Open VPN'
+                run: sudo apt-get install openvpn
+
+            -   name: '[VPN] Connect'
+                uses: golfzaptw/action-connect-ovpn@master
+                id: connect_vpn
+                with:
+                    PING_URL: '172.27.128.47'
+                    FILE_OVPN: '.github/vpn/config.ovpn'
+                    SECRET: ${{ secrets.VPN_USERNAME_PASSWORD }}
+                    TLS_KEY: ''
+                env:
+                    CA_CRT: ${{ secrets.VPN_CA }}
+                    USER_CRT: ${{ secrets.VPN_CRT }}
+                    USER_KEY: ${{ secrets.VPN_KEY }}
+
+            -   name: '[VPN] Check Connection'
+                run: echo ${{ steps.connect_vpn.outputs.STATUS }}
+
+            # Run selenium tests
+            -   name: '[SELENIUM] Start server'
+                working-directory: ./selenium-tests
+                run: bin/selenium-server-start
+
+            -   name: '[SELENIUM] Run all ${{ matrix.env }} tests'
+                working-directory: ./selenium-tests
+                env:
+                    API_KEY: ${{ secrets.IMAGE_API_APIKEY }}
+                run: ./vendor/bin/steward run -vv ${{ matrix.group }} ${{ matrix.env }} chrome
+
+            -   name: '[SELENIUM] Stop server'
+                if: success() || failure()
+                working-directory: ./selenium-tests
+                run: bin/selenium-server-start
+
+            -   name: '[ARTIFACT] Upload a result'
+                if: success() || failure()
+                uses: actions/upload-artifact@v3
+                with:
+                    name: selenium-results-${{ matrix.env }}.xml
+                    path: './selenium-tests/logs/results.xml'
+
+            # Notify
+            -   name: Slack Notification - fail
+                if: failure()
+                uses: rtCamp/action-slack-notify@v2
+                env:
+                    SLACK_CHANNEL: error-log
+                    SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
+                    SLACK_MESSAGE: 'Selenium tests have failed :boom:'
+                    SLACK_TITLE: Image Api - Selenium tests on ${{ matrix.env }}
+                    SLACK_USERNAME: Github Action
+                    SLACK_WEBHOOK: ${{ secrets.SLACK_ERROR_WEBHOOK }}

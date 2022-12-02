@@ -11,10 +11,10 @@ on:
 jobs:
     checks:
         runs-on: ubuntu-latest
-        name: PHP checks
+        name: Check application
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: '[PHP] Setup'
                 uses: shivammathur/setup-php@v2
@@ -41,10 +41,10 @@ jobs:
 
     selenium-checks:
         runs-on: ubuntu-latest
-        name: PHP 8.1 - selenium checks
+        name: Check selenium
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: '[PHP] Setup'
                 uses: shivammathur/setup-php@v2
@@ -95,7 +95,7 @@ jobs:
         environment: prod
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             # Prepare .env file
             -   name: '[ENV] Prepare configuration file'
@@ -128,14 +128,17 @@ jobs:
     release:
         runs-on: ubuntu-latest
         name: Release deb package
+        timeout-minutes: 5
         needs:
             - checks
             - download-deploy-console
             - build
+        concurrency:
+            group: ${{ format('{0}-{1}', github.workflow, github.job) }}
         environment: prod
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: '[PHP] Setup PHP'
                 uses: shivammathur/setup-php@v2
@@ -232,7 +235,7 @@ jobs:
         environment: prod
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: '[PHP] Setup PHP'
                 uses: shivammathur/setup-php@v2

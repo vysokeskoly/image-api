@@ -12,10 +12,10 @@ on:
 jobs:
     checks:
         runs-on: ubuntu-latest
-        name: PHP 8.1 - checks
+        name: Check application
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: '[PHP] Setup'
                 uses: shivammathur/setup-php@v2
@@ -58,10 +58,10 @@ jobs:
 
     selenium-checks:
         runs-on: ubuntu-latest
-        name: PHP 8.1 - selenium checks
+        name: Check selenium
         steps:
             # Setup
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v3
 
             -   name: '[PHP] Setup'
                 uses: shivammathur/setup-php@v2
